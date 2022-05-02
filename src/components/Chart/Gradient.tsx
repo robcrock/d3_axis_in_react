@@ -1,5 +1,4 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 const Gradient = ({ id, colors, ...props }) => (
   <linearGradient
@@ -17,15 +16,5 @@ const Gradient = ({ id, colors, ...props }) => (
     ))}
   </linearGradient>
 );
-
-Gradient.propTypes = {
-  id: PropTypes.string,
-  colors: PropTypes.arrayOf(PropTypes.string),
-};
-
-Gradient.defaultProps = {
-  id: 'Gradient',
-  colors: [],
-};
 
 export default Gradient;
