@@ -1,41 +1,43 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useMemo } from 'react';
 import * as d3 from 'd3';
-import Axis from './components/Chart/Axis';
-import { getTimelineData } from './utils/dummyData';
-import { useChartDimensions } from './components/Chart/utils';
 
-import './styles.css';
+const App = ({ domain = [0, 100], range = [10, 290] }) => {
+  const ticks = useMemo(() => {
+    const xScale = d3.scaleLinear().domain(domain).range(range);
 
-const parseDate = d3.timeParse('%m/%d/%Y');
-const dateAccessor = (d: any) => parseDate(d.date);
-const temperatureAccessor = (d: any) => d.temperature;
+    const width = range[1] - range[0];
+    const pixelsPerTick = 30;
+    const numberOfTicksTarget = Math.max(1, Math.floor(width / pixelsPerTick));
 
-type TypedData = {
-  timeline: {
-    date: string;
-    temperature: number;
-  }[];
-};
-
-const getData = () => ({
-  timeline: getTimelineData(),
-});
-
-const App = () => {
-  const [data, setData] = useState(getData());
-
-  const formatDate = d3.timeFormat('%-b %-d');
-
-  type TypedDimensions = {};
+    return xScale.ticks(numberOfTicksTarget).map(value => ({
+      value,
+      xOffset: xScale(value),
+    }));
+  }, [domain.join('-'), range.join('-')]);
 
   return (
-    <React.Fragment>
-      <div className='App'>
-        <div className='App__charts'>
-          <Axis />
-        </div>
-      </div>
-    </React.Fragment>
+    <svg>
+      <path
+        d={['M', range[0], 6, 'v', -6, 'H', range[1], 'v', 6].join(' ')}
+        fill='none'
+        stroke='currentColor'
+      />
+      {ticks.map(({ value, xOffset }) => (
+        <g key={value} transform={`translate(${xOffset}, 0)`}>
+          <line y2='6' stroke='currentColor' />
+          <text
+            key={value}
+            style={{
+              fontSize: '10px',
+              textAnchor: 'middle',
+              transform: 'translateY(20px)',
+            }}
+          >
+            {value}
+          </text>
+        </g>
+      ))}
+    </svg>
   );
 };
 
