@@ -1,143 +1,106 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { useState, useRef } from 'react';
 import * as d3 from 'd3';
-import { dimensionsPropsType } from './utils';
-import { useChartDimensions } from './Chart';
+import { useChartDimensions } from './utils';
+import { getTimelineData } from '../../utils/dummyData';
 
-type AxisComponentsByDimensionType = {
-  x: ({
-    dimensions,
-    label,
-    formatTick,
-    scale,
-    ...props
-  }: AxisHorizontalProps) => JSX.Element;
-  y: ({
-    dimensions,
-    label,
-    formatTick,
-    scale,
-    ...props
-  }: AxisVerticalProps) => JSX.Element;
+type PassedSettingsTypes = {
+  height: number;
+  width: number;
+  marginTop: number;
+  marginRight: number;
+  marginBottom: number;
+  marginLeft: number;
 };
 
-const axisComponentsByDimension: AxisComponentsByDimensionType = {
-  x: AxisHorizontal,
-  y: AxisVertical,
+type TypedTimelineData = {
+  date: string;
+  temperature: number;
+}[];
+interface Data {
+  [key: string]: any;
+}
+
+type xAccessorFunc = (d: any) => number | Date;
+
+const getData = () => getTimelineData();
+
+const passedSettings = {
+  height: 900,
+  width: 1400,
+  marginTop: 0,
+  marginRight: 0,
+  marginBottom: 20,
+  marginLeft: 20,
 };
 
-type AxisProps = {
-  dimension: string;
-};
-
-const Axis: React.FunctionComponent<AxisProps> = ({ dimension, ...props }) => {
-  const dimensions = useChartDimensions();
-  const Component: React.FunctionComponent<
-    AxisHorizontalProps | AxisVerticalProps
-  > =
-    axisComponentsByDimension[dimension as keyof AxisComponentsByDimensionType];
-  if (!Component) return null;
-
-  return <Component dimensions={dimensions} {...props} />;
-};
-
-export default Axis;
-
-type AxisHorizontalProps = {
-  dimensions: any;
-  label: any;
-  formatTick: any;
-  scale: any;
-};
-
-function AxisHorizontal({
-  dimensions,
-  label,
-  formatTick,
-  scale,
+const Axis = ({
+  dimension = 'x',
+  scale = 'scaleLinear',
+  formatTick = 'd3.format(",")',
+  label = 'x-axis',
   ...props
-}: AxisHorizontalProps) {
+}) => {
+  const [data, setData] = useState(getData());
+  const [ref, dimensions] = useChartDimensions(passedSettings);
+
+  const xAccessor: xAccessorFunc = d => new Date(d.date);
+
+  const xDomain = d3.extent(data, d => d.date);
+
+  console.log('Domain b ', xDomain);
+
+  const xScale = d3
+    .scaleTime()
+    .domain(xDomain ? [0, 0] : [0, 0])
+    .range([0, dimensions.boundedWidth]);
+
+  console.log('Domain a ', xDomain);
+
   const numberOfTicks =
     dimensions.boundedWidth < 600
       ? dimensions.boundedWidth / 100
       : dimensions.boundedWidth / 250;
 
-  const ticks = scale.ticks(numberOfTicks);
+  console.log('n of ticks ', numberOfTicks);
+
+  const ticks = xScale.ticks(numberOfTicks);
+
+  console.log('Ticks ', ticks);
 
   return (
-    <g
-      className='Axis AxisHorizontal'
-      transform={`translate(0, ${dimensions.boundedHeight})`}
-      {...props}
-    >
-      <line className='Axis__line' x2={dimensions.boundedWidth} />
+    <svg className='Chart' width={dimensions.width} height={dimensions.height}>
+      <g
+        transform={`translate(${dimensions.marginLeft}, ${dimensions.marginTop})`}
+      >
+        <g className='Axis AxisVertical' {...props}>
+          <line className='Axis__line' y2={dimensions.boundedHeight} />
 
-      {ticks.map((tick: React.Key | null | undefined, i: any) => (
-        <text
-          key={tick}
-          className='Axis__tick'
-          transform={`translate(${scale(tick)}, 25)`}
-        >
-          {formatTick(tick)}
-        </text>
-      ))}
+          {ticks.map((tick, i) => (
+            <text
+              key={`tick-${i}`}
+              className='Axis__tick'
+              transform={`translate(-16, ${xScale(tick)})`}
+            >
+              {d3.format(',')(tick)}
+            </text>
+          ))}
 
-      {label && (
-        <text
-          className='Axis__label'
-          transform={`translate(${dimensions.boundedWidth / 2}, 60)`}
-        >
-          {label}
-        </text>
-      )}
-    </g>
+          {/* {label && (
+            <text
+              className='Axis__label'
+              style={{
+                transform: `translate(-56px, ${
+                  dimensions.boundedHeight / 2
+                }px) rotate(-90deg)`,
+              }}
+            >
+              {label}
+            </text>
+          )} */}
+        </g>
+      </g>
+    </svg>
   );
-}
-
-type AxisVerticalProps = {
-  dimensions: any;
-  label: any;
-  formatTick: any;
-  scale: any;
 };
 
-function AxisVertical({
-  dimensions,
-  label,
-  formatTick,
-  scale,
-  ...props
-}: AxisVerticalProps) {
-  const numberOfTicks = dimensions.boundedHeight / 70;
-
-  const ticks = scale.ticks(numberOfTicks);
-
-  return (
-    <g className='Axis AxisVertical' {...props}>
-      <line className='Axis__line' y2={dimensions.boundedHeight} />
-
-      {ticks.map((tick: React.Key | null | undefined, i: any) => (
-        <text
-          key={tick}
-          className='Axis__tick'
-          transform={`translate(-16, ${scale(tick)})`}
-        >
-          {formatTick(tick)}
-        </text>
-      ))}
-
-      {label && (
-        <text
-          className='Axis__label'
-          style={{
-            transform: `translate(-56px, ${
-              dimensions.boundedHeight / 2
-            }px) rotate(-90deg)`,
-          }}
-        >
-          {label}
-        </text>
-      )}
-    </g>
-  );
-}
+export default Axis;

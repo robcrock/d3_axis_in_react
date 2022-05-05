@@ -1,14 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { GlobalStyles } from './styles/GlobalStyles';
 import * as d3 from 'd3';
-import Timeline from './components/Timeline';
+import Axis from './components/Chart/Axis';
 import { getTimelineData } from './utils/dummyData';
+import { useChartDimensions } from './components/Chart/utils';
 
 import './styles.css';
 
 const parseDate = d3.timeParse('%m/%d/%Y');
 const dateAccessor = (d: any) => parseDate(d.date);
 const temperatureAccessor = (d: any) => d.temperature;
+
+type TypedData = {
+  timeline: {
+    date: string;
+    temperature: number;
+  }[];
+};
 
 const getData = () => ({
   timeline: getTimelineData(),
@@ -17,19 +24,15 @@ const getData = () => ({
 const App = () => {
   const [data, setData] = useState(getData());
 
-  console.log(data.timeline);
+  const formatDate = d3.timeFormat('%-b %-d');
+
+  type TypedDimensions = {};
 
   return (
     <React.Fragment>
-      <GlobalStyles />
       <div className='App'>
         <div className='App__charts'>
-          <Timeline
-            data={data.timeline}
-            xAccessor={dateAccessor}
-            yAccessor={temperatureAccessor}
-            label='Temperature'
-          />
+          <Axis />
         </div>
       </div>
     </React.Fragment>
