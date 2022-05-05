@@ -1,104 +1,42 @@
-import React, { useState, useRef } from 'react';
+import React, { useMemo } from 'react';
 import * as d3 from 'd3';
-import { useChartDimensions } from './utils';
-import { getTimelineData } from '../../utils/dummyData';
 
-type PassedSettingsTypes = {
-  height: number;
-  width: number;
-  marginTop: number;
-  marginRight: number;
-  marginBottom: number;
-  marginLeft: number;
-};
+const Axis = ({ domain = [0, 100], range = [10, 290] }) => {
+  const ticks = useMemo(() => {
+    const xScale = d3.scaleLinear().domain(domain).range(range);
 
-type TypedTimelineData = {
-  date: string;
-  temperature: number;
-}[];
-interface Data {
-  [key: string]: any;
-}
+    const width = range[1] - range[0];
+    const pixelsPerTick = 30;
+    const numberOfTicksTarget = Math.max(1, Math.floor(width / pixelsPerTick));
 
-type xAccessorFunc = (d: any) => number | Date;
-
-const getData = () => getTimelineData();
-
-const passedSettings = {
-  height: 900,
-  width: 1400,
-  marginTop: 0,
-  marginRight: 0,
-  marginBottom: 20,
-  marginLeft: 20,
-};
-
-const Axis = ({
-  dimension = 'x',
-  scale = 'scaleLinear',
-  formatTick = 'd3.format(",")',
-  label = 'x-axis',
-  ...props
-}) => {
-  const [data, setData] = useState(getData());
-  const [ref, dimensions] = useChartDimensions(passedSettings);
-
-  const xAccessor: xAccessorFunc = d => new Date(d.date);
-
-  const xDomain = d3.extent(data, d => d.date);
-
-  console.log('Domain b ', xDomain);
-
-  const xScale = d3
-    .scaleTime()
-    .domain(xDomain ? [0, 0] : [0, 0])
-    .range([0, dimensions.boundedWidth]);
-
-  console.log('Domain a ', xDomain);
-
-  const numberOfTicks =
-    dimensions.boundedWidth < 600
-      ? dimensions.boundedWidth / 100
-      : dimensions.boundedWidth / 250;
-
-  console.log('n of ticks ', numberOfTicks);
-
-  const ticks = xScale.ticks(numberOfTicks);
-
-  console.log('Ticks ', ticks);
+    return xScale.ticks(numberOfTicksTarget).map(value => ({
+      value,
+      xOffset: xScale(value),
+    }));
+  }, [domain.join('-'), range.join('-')]);
 
   return (
-    <svg className='Chart' width={dimensions.width} height={dimensions.height}>
-      <g
-        transform={`translate(${dimensions.marginLeft}, ${dimensions.marginTop})`}
-      >
-        <g className='Axis AxisVertical' {...props}>
-          <line className='Axis__line' y2={dimensions.boundedHeight} />
-
-          {ticks.map((tick, i) => (
-            <text
-              key={`tick-${i}`}
-              className='Axis__tick'
-              transform={`translate(-16, ${xScale(tick)})`}
-            >
-              {d3.format(',')(tick)}
-            </text>
-          ))}
-
-          {/* {label && (
-            <text
-              className='Axis__label'
-              style={{
-                transform: `translate(-56px, ${
-                  dimensions.boundedHeight / 2
-                }px) rotate(-90deg)`,
-              }}
-            >
-              {label}
-            </text>
-          )} */}
+    <svg>
+      <path
+        d={['M', range[0], 6, 'v', -6, 'H', range[1], 'v', 6].join(' ')}
+        fill='none'
+        stroke='currentColor'
+      />
+      {ticks.map(({ value, xOffset }) => (
+        <g key={value} transform={`translate(${xOffset}, 0)`}>
+          <line y2='6' stroke='currentColor' />
+          <text
+            key={value}
+            style={{
+              fontSize: '10px',
+              textAnchor: 'middle',
+              transform: 'translateY(20px)',
+            }}
+          >
+            {value}
+          </text>
         </g>
-      </g>
+      ))}
     </svg>
   );
 };
