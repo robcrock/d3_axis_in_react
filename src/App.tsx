@@ -1,43 +1,30 @@
-import React, { useMemo } from 'react';
+import React, { useState } from 'react';
+import Timeline from './components/Timeline';
 import * as d3 from 'd3';
+import { getTimelineData } from './utils/dummyData';
 
-const App = ({ domain = [0, 100], range = [10, 290] }) => {
-  const ticks = useMemo(() => {
-    const xScale = d3.scaleLinear().domain(domain).range(range);
+const formatDate = d3.timeFormat('%-b %-d');
 
-    const width = range[1] - range[0];
-    const pixelsPerTick = 30;
-    const numberOfTicksTarget = Math.max(1, Math.floor(width / pixelsPerTick));
+const parseDate = d3.timeParse('%m/%d/%Y');
+const dateAccessor = (d: any) => parseDate(d.date) ?? new Date(2022, 12);
+const temperatureAccessor = (d: any) => d.temperature ?? 0;
 
-    return xScale.ticks(numberOfTicksTarget).map(value => ({
-      value,
-      xOffset: xScale(value),
-    }));
-  }, [domain.join('-'), range.join('-')]);
+const getData = () => ({
+  timeline: getTimelineData(),
+});
+
+const App = () => {
+  const [data, setData] = useState(getData());
 
   return (
-    <svg>
-      <path
-        d={['M', range[0], 6, 'v', -6, 'H', range[1], 'v', 6].join(' ')}
-        fill='none'
-        stroke='currentColor'
+    <>
+      <Timeline
+        data={data.timeline}
+        xAccessor={dateAccessor}
+        yAccessor={temperatureAccessor}
+        label='Temperature'
       />
-      {ticks.map(({ value, xOffset }) => (
-        <g key={value} transform={`translate(${xOffset}, 0)`}>
-          <line y2='6' stroke='currentColor' />
-          <text
-            key={value}
-            style={{
-              fontSize: '10px',
-              textAnchor: 'middle',
-              transform: 'translateY(20px)',
-            }}
-          >
-            {value}
-          </text>
-        </g>
-      ))}
-    </svg>
+    </>
   );
 };
 
