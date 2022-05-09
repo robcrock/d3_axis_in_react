@@ -1,21 +1,11 @@
 import { useEffect, useState, useRef } from 'react';
 import ResizeObserver from 'resize-observer-polyfill';
+import { DimensionProps } from '../typings/types';
 
 export const callAccessor = (accessor: any, d: any, i: number) =>
   typeof accessor === 'function' ? accessor(d, i) : accessor;
 
-export type TDimensions = {
-  width: number;
-  height: number;
-  marginTop: number;
-  marginRight: number;
-  marginBottom: number;
-  marginLeft: number;
-  boundedHeight: number;
-  boundedWidth: number;
-};
-
-export const combineChartDimensions = (dimensions: TDimensions) => {
+export const combineChartDimensions = (dimensions: DimensionProps) => {
   let parsedDimensions = {
     ...dimensions,
     marginTop: 40,

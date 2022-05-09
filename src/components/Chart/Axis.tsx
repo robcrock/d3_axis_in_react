@@ -1,65 +1,57 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import * as d3 from 'd3';
 
-import { TDimensions } from '../utils';
+import { DimensionProps } from '../../typings/types';
 
-type TypedAxis = {
-  dimensions: TDimensions;
+type AxisProps = {
+  dimensions: DimensionProps;
   label: string;
   formatTick: (date: Date) => string;
   scale: d3.ScaleTime<number, number, never>;
 };
 
-const Axis: React.FC<TypedAxis> = ({
+const Axis: React.FC<AxisProps> = ({
   dimensions,
   label,
   formatTick,
   scale,
   ...props
 }) => {
-  let domain = [0, 100];
-  let range = [10, 290];
-
   const numberOfTicks =
     dimensions.boundedWidth < 600
       ? dimensions.boundedWidth / 100
       : dimensions.boundedWidth / 250;
 
-  const ticks = useMemo(() => {
-    const xScale = d3.scaleLinear().domain(domain).range(range);
-
-    const width = range[1] - range[0];
-    const pixelsPerTick = 30;
-    const numberOfTicksTarget = Math.max(1, Math.floor(width / pixelsPerTick));
-
-    return xScale.ticks(numberOfTicksTarget).map(value => ({
-      value,
-      xOffset: xScale(value),
-    }));
-  }, [domain.join('-'), range.join('-')]);
+  const ticks = scale.ticks(numberOfTicks);
 
   return (
     <svg>
-      <path
-        d={['M', range[0], 6, 'v', -6, 'H', range[1], 'v', 6].join(' ')}
-        fill='none'
-        stroke='currentColor'
-      />
-      {ticks.map(({ value, xOffset }) => (
-        <g key={value} transform={`translate(${xOffset}, 0)`}>
-          <line y2='6' stroke='currentColor' />
+      <g
+        className='Axis AxisHorizontal'
+        transform={`translate(0, ${dimensions.boundedHeight})`}
+        {...props}
+      >
+        <line className='Axis__line' x2={dimensions.boundedWidth} />
+
+        {ticks.map((tick, i) => (
           <text
-            key={value}
-            style={{
-              fontSize: '10px',
-              textAnchor: 'middle',
-              transform: 'translateY(20px)',
-            }}
+            key={i}
+            className='Axis__tick'
+            transform={`translate(${scale(tick)}, 25)`}
           >
-            {value}
+            {formatTick(tick)}
           </text>
-        </g>
-      ))}
+        ))}
+
+        {label && (
+          <text
+            className='Axis__label'
+            transform={`translate(${dimensions.boundedWidth / 2}, 60)`}
+          >
+            {label}
+          </text>
+        )}
+      </g>
     </svg>
   );
 };

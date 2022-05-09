@@ -3,27 +3,41 @@ import * as d3 from 'd3';
 
 import Chart from './Chart/Chart';
 import Axis from './Chart/Axis';
-import { useChartDimensions, useUniqueId } from './utils';
+import { useChartDimensions } from './utils';
+import { DimensionProps } from '../typings/types';
 
 const formatDate = d3.timeFormat('%-b %-d');
 
 type Data = any[];
 
-type TypedTimeline = {
+type TimelineProps = {
   data: Data;
   xAccessor: (d: Data) => Date;
   yAccessor: (d: Data) => number;
   label: string;
 };
 
-const Timeline: React.FC<TypedTimeline> = ({
+const defaulSetting: DimensionProps = {
+  height: 600,
+  width: 700,
+  marginTop: 40,
+  marginRight: 30,
+  marginBottom: 40,
+  marginLeft: 75,
+  boundedHeight: 0,
+  boundedWidth: 0,
+};
+
+const Timeline: React.FC<TimelineProps> = ({
   data,
   xAccessor,
   yAccessor,
   label,
 }) => {
-  const [ref, dimensions] = useChartDimensions(null);
-  const gradientId = useUniqueId('Timeline-gradient');
+  const [ref, dimensions] = useChartDimensions(defaulSetting);
+
+  console.log('Ref from useChartDimensisons ', ref.current);
+  console.log('dimensions from useChartDimensisons ', dimensions);
 
   const [xMin, xMax] = d3.extent(data, xAccessor);
 
@@ -32,24 +46,16 @@ const Timeline: React.FC<TypedTimeline> = ({
     .domain([xMin ?? new Date(2022, 1), xMax ?? new Date(2022, 12)])
     .range([0, dimensions.boundedWidth]);
 
-  const xAccessorScaled = d => xScale(xAccessor(d));
-
-  const height = 400;
-  const width = 900;
-
-  const bounds = {
-    marginTop: 40,
-    marginRight: 30,
-    marginBottom: 40,
-    marginLeft: 75,
-  };
-
   const dims = {
-    height,
-    width,
-    ...bounds,
-    boundedHeight: Math.max(height - bounds.marginTop - bounds.marginBottom, 0),
-    boundedWidth: Math.max(width - bounds.marginLeft - bounds.marginRight, 0),
+    ...dimensions,
+    boundedHeight: Math.max(
+      dimensions.height - dimensions.marginTop - dimensions.marginBottom,
+      0,
+    ),
+    boundedWidth: Math.max(
+      dimensions.width - dimensions.marginLeft - dimensions.marginRight,
+      0,
+    ),
   };
 
   return (
