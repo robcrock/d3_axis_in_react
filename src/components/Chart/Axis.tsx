@@ -16,7 +16,7 @@ const defaulSetting: DimensionProps = {
 };
 
 type AxisProps<T extends ElementType = 'g'> = {
-  dimension?: 'x' | 'y';
+  dimension?: T;
   children: ReactNode;
 };
 
@@ -25,9 +25,13 @@ const axisComponentsByDimension = {
   // y: AxisVertical,
 };
 
-const Axis = <T extends ElementType = 'g'>({ dimension, ...props }: AxisProps<T> & ComponentPropsWithoutRef<T> => {
+const Axis = <T extends ElementType = 'g'>({
+  dimension,
+  children,
+  ...props
+}: AxisProps<T> & ComponentPropsWithoutRef<T>) => {
   const dimensions = useChartDimensions(defaulSetting);
-  const Component = AxisHorizontal;
+  const Component = axisComponentsByDimension[dimension as 'x'];
 
   if (!Component) return null;
 
@@ -38,9 +42,9 @@ export default Axis;
 
 type AxisHorizontalProps = {
   dimensions: DimensionProps;
-  label: string;
-  formatTick: (date: Date) => string;
-  scale: d3.ScaleTime<number, number, never>;
+  label?: string;
+  formatTick?: (date: Date) => string;
+  scale?: d3.ScaleTime<number, number, never>;
 };
 
 export function AxisHorizontal({
