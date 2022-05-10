@@ -6,12 +6,12 @@ import './Chart.css';
 const ChartContext = createContext({});
 export const useChartDimensions = () => useContext(ChartContext);
 
-type TypedChart = {
+type ChartProps = {
   dimensions: DimensionProps;
   children: React.ReactNode;
 };
 
-const Chart: React.FC<TypedChart> = ({ dimensions, children }) => (
+const Chart: React.FC<ChartProps> = ({ dimensions, children }) => (
   <ChartContext.Provider value={dimensions}>
     <svg className='Chart' width={dimensions.width} height={dimensions.height}>
       <g

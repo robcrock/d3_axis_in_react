@@ -2,7 +2,7 @@ import React from 'react';
 import * as d3 from 'd3';
 
 import Chart from './Chart/Chart';
-import Axis from './Chart/Axis';
+import { AxisHorizontal } from './Chart/Axis';
 import { useChartDimensions } from './utils';
 import { DimensionProps } from '../typings/types';
 
@@ -58,11 +58,13 @@ const Timeline: React.FC<TimelineProps> = ({
     ),
   };
 
+  console.log('Timeline dims ', dims);
+
   return (
     <div className='Timeline' ref={ref}>
       <Chart dimensions={dimensions}>
-        <Axis
-          dimensions={dims}
+        <AxisHorizontal
+          dimension='x'
           scale={xScale}
           formatTick={formatDate}
           label='Date'
