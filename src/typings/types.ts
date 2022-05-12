@@ -1,4 +1,4 @@
-export interface DimensionProps {
+export interface Dimensions {
   height: number;
   width: number;
   marginTop: number;

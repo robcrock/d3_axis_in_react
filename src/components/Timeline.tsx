@@ -2,9 +2,9 @@ import React from 'react';
 import * as d3 from 'd3';
 
 import Chart from './Chart/Chart';
-import { AxisHorizontal } from './Chart/Axis';
+import Axis from './Chart/Axis';
 import { useChartDimensions } from './utils';
-import { DimensionProps } from '../typings/types';
+import { Dimensions } from '../typings/types';
 
 const formatDate = d3.timeFormat('%-b %-d');
 
@@ -17,7 +17,7 @@ type TimelineProps = {
   label: string;
 };
 
-const defaulSetting: DimensionProps = {
+const defaulSetting: Dimensions = {
   height: 600,
   width: 700,
   marginTop: 40,
@@ -36,15 +36,22 @@ const Timeline: React.FC<TimelineProps> = ({
 }) => {
   const [ref, dimensions] = useChartDimensions(defaulSetting);
 
-  console.log('Ref from useChartDimensisons ', ref.current);
-  console.log('dimensions from useChartDimensisons ', dimensions);
-
   const [xMin, xMax] = d3.extent(data, xAccessor);
-
   const xScale = d3
     .scaleTime()
     .domain([xMin ?? new Date(2022, 1), xMax ?? new Date(2022, 12)])
     .range([0, dimensions.boundedWidth]);
+
+  const [yMin, yMax] = d3.extent(data, yAccessor);
+  const yScale = d3
+    .scaleLinear()
+    .domain([yMin ?? 0, yMax ?? 0])
+    .range([dimensions.boundedHeight, 0])
+    .nice();
+
+  const xAccessorScaled = (d: any) => xScale(xAccessor(d));
+  const yAccessorScaled = (d: any) => yScale(yAccessor(d));
+  const y0AccessorScaled = yScale(yScale.domain()[0]);
 
   const dims = {
     ...dimensions,
@@ -58,17 +65,11 @@ const Timeline: React.FC<TimelineProps> = ({
     ),
   };
 
-  console.log('Timeline dims ', dims);
-
   return (
     <div className='Timeline' ref={ref}>
       <Chart dimensions={dimensions}>
-        <AxisHorizontal
-          dimension='x'
-          scale={xScale}
-          formatTick={formatDate}
-          label='Date'
-        />
+        <Axis dimension='x' scale={xScale} formatTick={formatDate} />
+        <Axis dimension='y' scale={yScale} label={label} />
       </Chart>
     </div>
   );

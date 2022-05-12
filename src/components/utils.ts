@@ -1,11 +1,11 @@
 import { useEffect, useState, useRef } from 'react';
 import ResizeObserver from 'resize-observer-polyfill';
-import { DimensionProps } from '../typings/types';
+import { Dimensions } from '../typings/types';
 
 export const callAccessor = (accessor: any, d: any, i: number) =>
   typeof accessor === 'function' ? accessor(d, i) : accessor;
 
-export const combineChartDimensions = (dimensions: DimensionProps) => {
+export const combineChartDimensions = (dimensions: Dimensions) => {
   let parsedDimensions = {
     ...dimensions,
     marginTop: 40,
@@ -31,7 +31,7 @@ export const combineChartDimensions = (dimensions: DimensionProps) => {
   };
 };
 
-export const useChartDimensions = (passedSettings: any) => {
+export const useChartDimensions = <T extends Dimensions>(passedSettings: T) => {
   const ref = useRef() as any;
   const dimensions = combineChartDimensions(passedSettings);
 
@@ -66,7 +66,7 @@ export const useChartDimensions = (passedSettings: any) => {
     height: dimensions.height || height,
   });
 
-  return [ref, newSettings];
+  return [ref, newSettings] as const;
 };
 
 let lastId = 0;

@@ -1,5 +1,5 @@
 import React, { createContext, useContext } from 'react';
-import { DimensionProps } from '../../typings/types';
+import { Dimensions } from '../../typings/types';
 
 import './Chart.css';
 
@@ -7,7 +7,7 @@ const ChartContext = createContext({});
 export const useChartDimensions = () => useContext(ChartContext);
 
 type ChartProps = {
-  dimensions: DimensionProps;
+  dimensions: Dimensions;
   children: React.ReactNode;
 };
 
