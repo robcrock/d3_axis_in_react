@@ -32,7 +32,7 @@ export const combineChartDimensions = (dimensions: Dimensions) => {
 };
 
 export const useChartDimensions = <T extends Dimensions>(passedSettings: T) => {
-  const ref = useRef() as any;
+  const ref = useRef(null);
   const dimensions = combineChartDimensions(passedSettings);
 
   const [width, changeWidth] = useState(0);

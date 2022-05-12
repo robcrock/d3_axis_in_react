@@ -2,12 +2,11 @@ import React, { useState } from 'react';
 import Timeline from './components/Timeline';
 import * as d3 from 'd3';
 import { getTimelineData } from './utils/dummyData';
-
-const formatDate = d3.timeFormat('%-b %-d');
+import { D } from './typings/types';
 
 const parseDate = d3.timeParse('%m/%d/%Y');
-const dateAccessor = (d: any) => parseDate(d.date) ?? new Date(2022, 12);
-const temperatureAccessor = (d: any) => d.temperature ?? 0;
+const dateAccessor = (d: D) => parseDate(d.date.toString());
+const temperatureAccessor = (d: D) => d.temperature;
 
 const getData = () => ({
   timeline: getTimelineData(),

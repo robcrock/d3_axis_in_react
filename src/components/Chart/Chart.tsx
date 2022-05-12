@@ -11,7 +11,7 @@ type ChartProps = {
   children: React.ReactNode;
 };
 
-const Chart: React.FC<ChartProps> = ({ dimensions, children }) => (
+const Chart = ({ dimensions, children }: ChartProps) => (
   <ChartContext.Provider value={dimensions}>
     <svg className='Chart' width={dimensions.width} height={dimensions.height}>
       <g

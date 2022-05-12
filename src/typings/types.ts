@@ -8,3 +8,8 @@ export interface Dimensions {
   boundedHeight: number;
   boundedWidth: number;
 }
+
+export interface D {
+  date: Date | string;
+  temperature: number;
+}
