@@ -16,8 +16,8 @@ type TimelineProps = {
 };
 
 const defaulSetting: Dimensions = {
-  height: 600,
-  width: 700,
+  height: 500,
+  width: 0,
   marginTop: 0,
   marginRight: 0,
   marginBottom: 0,
@@ -49,6 +49,7 @@ const Timeline: React.FC<TimelineProps> = ({
 
   return (
     <div className='Timeline' ref={ref}>
+      <div>Timeline dimensions</div>
       <pre>{JSON.stringify(dimensions, null, 2)}</pre>
       <Chart dimensions={dimensions}>
         <Axis dimension='x' scale={xScale} formatTick={formatDate} />

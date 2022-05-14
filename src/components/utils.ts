@@ -31,7 +31,7 @@ export const combineChartDimensions = (dimensions: Dimensions) => {
   };
 };
 
-export const useChartDimensions = <T extends Dimensions>(passedSettings: T) => {
+export const useChartDimensions = (passedSettings: Dimensions) => {
   const ref = useRef(null);
   const dimensions = combineChartDimensions(passedSettings);
 
@@ -53,6 +53,8 @@ export const useChartDimensions = <T extends Dimensions>(passedSettings: T) => {
         changeHeight(entry.contentRect.height);
     });
 
+    console.log('height ', height);
+    console.log('width ', width);
     const element = ref.current;
 
     resizeObserver.observe(element!);

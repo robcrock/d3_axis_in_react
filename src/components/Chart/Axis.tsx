@@ -1,23 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import * as d3 from 'd3';
 
 import { Dimensions } from '../../typings/types';
-import { useChartDimensions } from '../utils';
-
-const defaulSetting: Dimensions = {
-  height: 600,
-  width: 700,
-  marginTop: 40,
-  marginRight: 30,
-  marginBottom: 40,
-  marginLeft: 75,
-  boundedHeight: 0,
-  boundedWidth: 0,
-};
+import { ChartContext } from './Chart';
 
 type DefaultAxisProps<C extends 'x' | 'y', P> = {
   dimension: C;
-  // children: React.ReactNode;
 } & P;
 
 type AxisProps<C extends 'x' | 'y'> = DefaultAxisProps<
@@ -37,7 +25,7 @@ const Axis = <C extends 'x' | 'y'>({
   // children,
   ...props
 }: AxisProps<C>) => {
-  const [, dimensions] = useChartDimensions(defaulSetting);
+  const dimensions = useContext(ChartContext);
 
   if (dimension === 'x') {
     let p = props as Omit<AxisHorizontalProps, 'dimensions'>;
