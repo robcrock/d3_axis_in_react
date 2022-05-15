@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import * as d3 from 'd3';
 
 import { Dimensions } from '../../typings/types';
-import { ChartContext } from './Chart';
+import { useChartDimensions } from './Chart';
 
 type DefaultAxisProps<C extends 'x' | 'y', P> = {
   dimension: C;
@@ -25,7 +25,7 @@ const Axis = <C extends 'x' | 'y'>({
   // children,
   ...props
 }: AxisProps<C>) => {
-  const dimensions = useContext(ChartContext);
+  const dimensions = useChartDimensions();
 
   if (dimension === 'x') {
     let p = props as Omit<AxisHorizontalProps, 'dimensions'>;

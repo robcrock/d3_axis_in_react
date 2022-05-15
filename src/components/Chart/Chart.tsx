@@ -3,7 +3,18 @@ import { Dimensions } from '../../typings/types';
 
 import './Chart.css';
 
-export const ChartContext = createContext({});
+// const defaulSetting: Dimensions = {
+//   height: 0,
+//   width: 0,
+//   marginTop: 0,
+//   marginRight: 0,
+//   marginBottom: 0,
+//   marginLeft: 0,
+//   boundedHeight: 0,
+//   boundedWidth: 0,
+// };
+
+const ChartContext = createContext();
 export const useChartDimensions = () => useContext(ChartContext);
 
 interface ChartProps {
@@ -13,8 +24,11 @@ interface ChartProps {
 
 const Chart = ({ dimensions, children }: ChartProps) => (
   <ChartContext.Provider value={dimensions}>
-    <div>Chart dimensions</div>
-    <pre>{JSON.stringify(dimensions, null, 2)}</pre>
+    {/*
+      Why does my chart continue to grow when I pass in
+      width={dimensions.width} as the prop to height on the svg?
+    */}
+    {/* <svg className='Chart' width={dimensions.width} height={500}> */}
     <svg className='Chart' width={dimensions.width} height={dimensions.height}>
       <g
         transform={`translate(${dimensions.marginLeft}, ${dimensions.marginTop})`}

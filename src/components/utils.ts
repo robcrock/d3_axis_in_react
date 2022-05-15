@@ -31,7 +31,9 @@ export const combineChartDimensions = (dimensions: Dimensions) => {
   };
 };
 
-export const useChartDimensions = (passedSettings: Dimensions) => {
+export const useChartDimensions = (
+  passedSettings: Dimensions,
+): [React.MutableRefObject<null>, Dimensions] => {
   const ref = useRef(null);
   const dimensions = combineChartDimensions(passedSettings);
 
@@ -39,23 +41,27 @@ export const useChartDimensions = (passedSettings: Dimensions) => {
   const [height, changeHeight] = useState(0);
 
   useEffect((): void | any => {
+    // We'll ignore the resize observer when width and height have been set.
     if (dimensions.width && dimensions.height) return [ref, dimensions];
+
+    const element = ref.current;
 
     const resizeObserver = new ResizeObserver(entries => {
       if (!Array.isArray(entries)) return;
       if (!entries.length) return;
 
+      // This means we only care about the first element resizing
       const entry = entries[0];
 
-      if (width !== entry.contentRect.width)
+      if (width !== entry.contentRect.width) {
+        console.log('Width changed');
         changeWidth(entry.contentRect.width);
-      if (height !== entry.contentRect.height)
+      }
+      if (height !== entry.contentRect.height) {
+        console.log('Height changed');
         changeHeight(entry.contentRect.height);
+      }
     });
-
-    console.log('height ', height);
-    console.log('width ', width);
-    const element = ref.current;
 
     resizeObserver.observe(element!);
 
@@ -68,7 +74,7 @@ export const useChartDimensions = (passedSettings: Dimensions) => {
     height: dimensions.height || height,
   });
 
-  return [ref, newSettings] as const;
+  return [ref, newSettings];
 };
 
 let lastId = 0;
