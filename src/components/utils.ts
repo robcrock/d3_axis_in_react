@@ -53,6 +53,8 @@ export const useChartDimensions = (
       // This means we only care about the first element resizing
       const entry = entries[0];
 
+      console.log({ entries });
+
       if (width !== entry.contentRect.width) {
         console.log('Width changed');
         changeWidth(entry.contentRect.width);
