@@ -1,8 +1,7 @@
 import React, { useContext } from 'react';
 import * as d3 from 'd3';
-
+import { DimensionContext } from '../Timeline';
 import { Dimensions } from '../../typings/types';
-import { useChartDimensions } from './Chart';
 
 type DefaultAxisProps<C extends 'x' | 'y', P> = {
   dimension: C;
@@ -20,12 +19,8 @@ const axisComponentsByDimension = {
   y: AxisVertical,
 } as const;
 
-const Axis = <C extends 'x' | 'y'>({
-  dimension,
-  // children,
-  ...props
-}: AxisProps<C>) => {
-  const dimensions = useChartDimensions();
+const Axis = <C extends 'x' | 'y'>({ dimension, ...props }: AxisProps<C>) => {
+  const dimensions = useContext(DimensionContext);
 
   if (dimension === 'x') {
     let p = props as Omit<AxisHorizontalProps, 'dimensions'>;
