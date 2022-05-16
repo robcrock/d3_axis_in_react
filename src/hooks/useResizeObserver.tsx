@@ -1,7 +1,18 @@
 import { MutableRefObject, useEffect, useState } from 'react';
 import { Dimensions } from '../typings/types';
 
-const combineChartDimensions = (dimensions: Dimensions) => {
+const defaulSetting: Dimensions = {
+  height: 0,
+  width: 0,
+  marginTop: 0,
+  marginRight: 0,
+  marginBottom: 0,
+  marginLeft: 0,
+  boundedHeight: 0,
+  boundedWidth: 0,
+};
+
+const combineChartDimensions = (dimensions: any) => {
   let parsedDimensions = {
     ...dimensions,
     marginTop: 40,
@@ -28,7 +39,7 @@ const combineChartDimensions = (dimensions: Dimensions) => {
 };
 
 const useResizeObserver = (ref: MutableRefObject<null>) => {
-  const [dimensions, setDimensions] = useState(null);
+  const [dimensions, setDimensions] = useState(defaulSetting);
 
   useEffect(() => {
     const observeTarget = ref.current;
@@ -38,7 +49,12 @@ const useResizeObserver = (ref: MutableRefObject<null>) => {
 
       const entry = entries[0];
 
-      setDimensions;
+      setDimensions(
+        combineChartDimensions({
+          width: entry.contentRect.width,
+          height: entry.contentRect.height,
+        }),
+      );
     });
 
     resizeObserver.observe(observeTarget!);
@@ -47,6 +63,7 @@ const useResizeObserver = (ref: MutableRefObject<null>) => {
       resizeObserver.unobserve(observeTarget!);
     };
   }, [ref]);
+
   return dimensions;
 };
 
