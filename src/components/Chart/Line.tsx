@@ -24,9 +24,8 @@ const Line = ({
 }: LineProps) => {
   const lineGenerator = d3.line().x(xAccessor).y(yAccessor);
 
-  const areaGenerator = d3.area().y0(y0Accessor).y1(yAccessor);
+  const areaGenerator = d3.area().x(xAccessor).y0(y0Accessor).y1(yAccessor);
 
-  console.log('lineGen ', lineGenerator(data[0]));
   return (
     <path
       {...props}
