@@ -10,7 +10,7 @@ type LineProps = {
   yAccessor: () => any;
   y0Accessor: () => any;
   y1Accessor: () => any;
-  interpolation: any;
+  interpolation?: d3.CurveFactory;
 };
 
 const Line = ({
@@ -22,9 +22,18 @@ const Line = ({
   interpolation,
   ...props
 }: LineProps) => {
-  const lineGenerator = d3.line().x(xAccessor).y(yAccessor);
+  const lineGenerator = d3
+    .line()
+    .x(xAccessor)
+    .y(yAccessor)
+    .curve(d3.curveNatural);
 
-  const areaGenerator = d3.area().x(xAccessor).y0(y0Accessor).y1(yAccessor);
+  const areaGenerator = d3
+    .area()
+    .x(xAccessor)
+    .y0(y0Accessor)
+    .y1(yAccessor)
+    .curve(d3.curveNatural);
 
   return (
     <path
