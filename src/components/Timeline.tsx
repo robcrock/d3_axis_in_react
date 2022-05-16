@@ -1,12 +1,13 @@
 import * as d3 from 'd3';
-import React, { useRef } from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 
 import Chart from './Chart/Chart';
 import './Chart/Chart.css';
 import Axis from './Chart/Axis';
-import { useChartDimensions } from './utils';
 import useResizeObserver from '../hooks/useResizeObserver';
 import { Dimensions, D } from '../typings/types';
+
+export const DimensionContext = React.createContext();
 
 const formatDate = d3.timeFormat('%-b %-d');
 
@@ -17,17 +18,6 @@ type TimelineProps = {
   label: string;
 };
 
-// const defaulSetting: Dimensions = {
-//   height: 0,
-//   width: 0,
-//   marginTop: 0,
-//   marginRight: 0,
-//   marginBottom: 0,
-//   marginLeft: 0,
-//   boundedHeight: 0,
-//   boundedWidth: 0,
-// };
-
 const Timeline: React.FC<TimelineProps> = ({
   data,
   xAccessor,
@@ -35,11 +25,10 @@ const Timeline: React.FC<TimelineProps> = ({
   label,
 }) => {
   // const [ref, dimensions] = useChartDimensions();
-  const svgRef = useRef(null);
   const wrapperRef: React.MutableRefObject<null> = useRef(null);
   const dimensions = useResizeObserver(wrapperRef);
 
-  console.log('Dimensions ', dimensions);
+  // console.log('Dimensions ', dimensions);
 
   const [xMin = 0, xMax = 0] = d3.extent(data, xAccessor);
   const xScale = d3
@@ -56,15 +45,16 @@ const Timeline: React.FC<TimelineProps> = ({
 
   return (
     <div className='Timeline' ref={wrapperRef}>
-      <Chart dimensions={dimensions}>
-        <AxisHorizontal
-          dimensions={dimensions}
-          label={label}
-          scale={xScale}
-          formatTick={formatDate}
-        />
-        <AxisVertical dimensions={dimensions} label={label} scale={yScale} />
-      </Chart>
+      <DimensionContext.Provider value={dimensions}>
+        <Chart>
+          <AxisHorizontal
+            label={'Date'}
+            scale={xScale}
+            formatTick={formatDate}
+          />
+          <AxisVertical label={'Temperature'} scale={yScale} />
+        </Chart>
+      </DimensionContext.Provider>
     </div>
   );
 };
@@ -72,7 +62,6 @@ const Timeline: React.FC<TimelineProps> = ({
 export default Timeline;
 
 type AxisHorizontalProps = {
-  dimensions: Dimensions;
   label?: string;
   formatTick?: (date: Date) => string;
   scale:
@@ -81,12 +70,13 @@ type AxisHorizontalProps = {
 };
 
 export function AxisHorizontal({
-  dimensions,
   label,
   formatTick,
   scale,
   ...props
 }: AxisHorizontalProps) {
+  const dimensions = useContext(DimensionContext);
+
   const numberOfTicks =
     dimensions.boundedWidth < 600
       ? dimensions.boundedWidth / 100
@@ -125,17 +115,13 @@ export function AxisHorizontal({
 }
 
 type AxisVerticalProps = {
-  dimensions: Dimensions;
   label?: string;
   scale: d3.ScaleLinear<number, number, never>;
 };
 
-export function AxisVertical({
-  dimensions,
-  label,
-  scale,
-  ...props
-}: AxisVerticalProps) {
+export function AxisVertical({ label, scale, ...props }: AxisVerticalProps) {
+  const dimensions = useContext(DimensionContext);
+
   const numberOfTicks = dimensions.boundedHeight / 70;
 
   const ticks = scale.ticks(numberOfTicks);

@@ -17,7 +17,7 @@ const combineChartDimensions = (dimensions: any) => {
     ...dimensions,
     marginTop: 40,
     marginRight: 30,
-    marginBottom: 40,
+    marginBottom: 100,
     marginLeft: 75,
   };
 
