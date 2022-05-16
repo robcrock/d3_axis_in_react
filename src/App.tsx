@@ -5,7 +5,7 @@ import { getTimelineData } from './utils/dummyData';
 import { D } from './typings/types';
 
 const parseDate = d3.timeParse('%m/%d/%Y');
-const dateAccessor = (d: D) => parseDate(d.date.toString());
+const dateAccessor = (d: D) => parseDate(d.date);
 const temperatureAccessor = (d: D) => d.temperature;
 
 const getData = () => ({
