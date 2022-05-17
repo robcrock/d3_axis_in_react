@@ -10,7 +10,7 @@ const Chart = ({ children }: ChartProps) => {
   const dimensions = useContext(DimensionContext);
 
   return (
-    <svg className='Chart' width={dimensions.width} height={500}>
+    <svg className='Chart' width={dimensions.width} height={dimensions.height}>
       <g
         transform={`translate(${dimensions.marginLeft}, ${dimensions.marginTop})`}
       >

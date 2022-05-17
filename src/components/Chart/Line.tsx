@@ -1,15 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import * as d3 from 'd3';
-import { D } from '../../typings/types';
+import { Data } from '../../typings/types';
 
 type LineProps = {
   type: 'line' | 'area';
-  data: D[];
-  xAccessor: () => any;
-  yAccessor: () => any;
-  y0Accessor: () => any;
-  y1Accessor: () => any;
+  data: Data[];
+  xAccessor: () => number;
+  yAccessor: () => number;
+  y0Accessor: () => number;
+  y1Accessor: () => number;
   interpolation?: d3.CurveFactory;
 };
 

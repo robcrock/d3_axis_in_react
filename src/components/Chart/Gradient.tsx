@@ -3,6 +3,8 @@ import React from 'react';
 type GradientProps = {
   id: string;
   colors: string[];
+  x2: string;
+  y2: string;
 };
 
 const Gradient = ({

@@ -7,18 +7,19 @@ import Axis from './Chart/Axis';
 import Gradient from './Chart/Gradient';
 import { useUniqueId } from './Chart/utils';
 import useResizeObserver from '../hooks/useResizeObserver';
-import { D } from '../typings/types';
+import { Dimensions } from '../typings/types';
+import { Data } from '../typings/types';
 import Line from './Chart/Line';
 
-export const DimensionContext = React.createContext();
+export const DimensionContext = React.createContext<Dimensions | null>(null);
 
 const formatDate = d3.timeFormat('%-b %-d');
 const gradientColors = ['rgb(226, 222, 243)', '#f8f9fa'];
 
 type TimelineProps = {
-  data: D[];
-  xAccessor: (d: D) => Date;
-  yAccessor: (d: D) => number;
+  data: Data[];
+  xAccessor: () => number;
+  yAccessor: () => number;
   label: string;
 };
 
@@ -46,8 +47,8 @@ const Timeline: React.FC<TimelineProps> = ({
     .range([dimensions.boundedHeight, 0])
     .nice();
 
-  const xAccessorScaled = (d: D) => xScale(xAccessor(d));
-  const yAccessorScaled = (d: D) => yScale(yAccessor(d));
+  const xAccessorScaled = (d: Data) => xScale(xAccessor(d));
+  const yAccessorScaled = (d: Data) => yScale(yAccessor(d));
   const y0AccessorScaled = yScale(yScale.domain()[0]);
 
   return (

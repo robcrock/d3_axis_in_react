@@ -14,20 +14,19 @@ type AxisProps<C extends 'x' | 'y'> = DefaultAxisProps<
     : Omit<AxisVerticalProps, 'dimensions'>
 >;
 
-const axisComponentsByDimension = {
-  x: AxisHorizontal,
-  y: AxisVertical,
-} as const;
-
 const Axis = <C extends 'x' | 'y'>({ dimension, ...props }: AxisProps<C>) => {
   const dimensions = useContext(DimensionContext);
 
   if (dimension === 'x') {
     let p = props as Omit<AxisHorizontalProps, 'dimensions'>;
-    return <AxisHorizontal dimensions={dimensions} {...p} />;
+    if (dimensions) {
+      return <AxisHorizontal dimensions={dimensions} {...p} />;
+    }
   } else if (dimension === 'y') {
     let p = props as Omit<AxisVerticalProps, 'dimensions'>;
-    return <AxisVertical dimensions={dimensions} {...p} />;
+    if (dimensions) {
+      return <AxisVertical dimensions={dimensions} {...p} />;
+    }
   }
 
   return null;

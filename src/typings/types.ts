@@ -9,7 +9,6 @@ export interface Dimensions {
   boundedWidth: number;
 }
 
-export interface D {
-  date: Date | string;
-  temperature: number;
+export interface Data {
+  [property: string]: string[];
 }
