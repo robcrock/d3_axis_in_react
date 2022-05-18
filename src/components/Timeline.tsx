@@ -45,7 +45,7 @@ const Timeline = ({ data, xAccessor, yAccessor, label }: TimelineProps) => {
 
   const xAccessorScaled = (d: Record) => xScale(xAccessor(d));
   const yAccessorScaled = (d: Record) => yScale(yAccessor(d));
-  const y0AccessorScaled = yScale(yScale.domain()[0]);
+  const y0Scaled = yScale(yScale.domain()[0]);
 
   return (
     <div className='Timeline' ref={wrapperRef}>
@@ -64,14 +64,14 @@ const Timeline = ({ data, xAccessor, yAccessor, label }: TimelineProps) => {
           <Area
             data={data}
             xAccessorScaled={xAccessorScaled}
-            yAccessor={yAccessorScaled}
-            y0Accessor={y0AccessorScaled}
+            yAccessorScaled={yAccessorScaled}
+            y0Scaled={y0Scaled}
             style={{ fill: `url(#${gradientId})` }}
           />
           <Line
             data={data}
-            xAccessor={xAccessorScaled}
-            yAccessor={yAccessorScaled}
+            xAccessorScaled={xAccessorScaled}
+            yAccessorScaled={yAccessorScaled}
           />
         </Chart>
       </DimensionContext.Provider>

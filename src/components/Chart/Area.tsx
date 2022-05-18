@@ -4,23 +4,24 @@ import { Record } from '../../typings/types';
 
 type AreaProps = {
   data: Record[];
-  xAccessorScaled: (d: number) => number;
-  yAccessor: (d: Record) => number;
-  y0Accessor: number;
+  xAccessorScaled: (d: Record) => number;
+  yAccessorScaled: (d: Record) => number;
+  y0Scaled: number;
+  style: { fill: string };
 };
 
 const Area = ({
   data,
   xAccessorScaled,
-  yAccessor,
-  y0Accessor,
+  yAccessorScaled,
+  y0Scaled,
   ...props
 }: AreaProps) => {
   const areaGenerator = d3
     .area()
     .x(xAccessorScaled)
-    .y0(y0Accessor)
-    .y1(yAccessor)
+    .y0(yAccessorScaled)
+    .y1(y0Scaled)
     .curve(d3.curveMonotoneX);
 
   return (

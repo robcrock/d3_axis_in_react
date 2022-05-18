@@ -3,16 +3,21 @@ import * as d3 from 'd3';
 import { Record } from '../../typings/types';
 
 type LineProps = {
-  data: Record;
-  xAccessor: (d: Record) => number;
-  yAccessor: (d: Record) => number;
+  data: Record[];
+  xAccessorScaled: (d: Record) => number;
+  yAccessorScaled: (d: Record) => number;
 };
 
-const Line = ({ data, xAccessor, yAccessor, ...props }: LineProps) => {
+const Line = ({
+  data,
+  xAccessorScaled,
+  yAccessorScaled,
+  ...props
+}: LineProps) => {
   const lineGenerator = d3
     .line()
-    .x(xAccessor)
-    .y(yAccessor)
+    .x(xAccessorScaled)
+    .y(yAccessorScaled)
     .curve(d3.curveMonotoneX);
 
   return (
