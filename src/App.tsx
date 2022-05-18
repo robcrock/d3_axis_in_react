@@ -1,26 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Timeline from './components/Timeline';
 import * as d3 from 'd3';
 import { getTimelineData } from './utils/dummyData';
-import { Data } from './typings/types';
+import { Record } from './typings/types';
 
-const parseDate = d3.timeParse('%m/%d/%Y');
-const dateAccessor = (d: Data) => parseDate(d.date);
-const temperatureAccessor = (d: Data) => parseFloat(d.temperature);
-
-const getData = () => ({
-  timeline: getTimelineData(),
-});
+const dateAccessor = (d: Record) => d.date;
+const temperatureAccessor = (d: Record) => d.temperature;
 
 const App = () => {
-  const [data, setData] = useState(getData());
+  const [data, setData] = useState(getTimelineData());
 
-  console.log(JSON.stringify(data.timeline));
+  useEffect(() => {
+    console.log(getTimelineData());
+    setData(getTimelineData());
+  }, []);
 
   return (
     <>
       <Timeline
-        data={data.timeline}
+        data={data}
         xAccessor={dateAccessor}
         yAccessor={temperatureAccessor}
         label='Temperature'

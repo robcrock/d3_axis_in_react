@@ -9,6 +9,7 @@ export interface Dimensions {
   boundedWidth: number;
 }
 
-export interface Data {
-  [property: string]: string[];
-}
+export type Record = {
+  date: Date;
+  temperature: number;
+};

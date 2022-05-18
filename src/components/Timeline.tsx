@@ -8,8 +8,9 @@ import Gradient from './Chart/Gradient';
 import { useUniqueId } from './Chart/utils';
 import useResizeObserver from '../hooks/useResizeObserver';
 import { Dimensions } from '../typings/types';
-import { Data } from '../typings/types';
+import { Record } from '../typings/types';
 import Line from './Chart/Line';
+import Area from './Chart/Area';
 
 export const DimensionContext = React.createContext<Dimensions | null>(null);
 
@@ -17,18 +18,13 @@ const formatDate = d3.timeFormat('%-b %-d');
 const gradientColors = ['rgb(226, 222, 243)', '#f8f9fa'];
 
 type TimelineProps = {
-  data: Data[];
-  xAccessor: () => number;
-  yAccessor: () => number;
+  data: Record[];
+  xAccessor: (d: Record) => Date;
+  yAccessor: (d: Record) => number;
   label: string;
 };
 
-const Timeline: React.FC<TimelineProps> = ({
-  data,
-  xAccessor,
-  yAccessor,
-  label,
-}) => {
+const Timeline = ({ data, xAccessor, yAccessor, label }: TimelineProps) => {
   const wrapperRef: React.MutableRefObject<null> = useRef(null);
   const dimensions = useResizeObserver(wrapperRef);
 
@@ -47,8 +43,8 @@ const Timeline: React.FC<TimelineProps> = ({
     .range([dimensions.boundedHeight, 0])
     .nice();
 
-  const xAccessorScaled = (d: Data) => xScale(xAccessor(d));
-  const yAccessorScaled = (d: Data) => yScale(yAccessor(d));
+  const xAccessorScaled = (d: Record) => xScale(xAccessor(d));
+  const yAccessorScaled = (d: Record) => yScale(yAccessor(d));
   const y0AccessorScaled = yScale(yScale.domain()[0]);
 
   return (
@@ -65,10 +61,9 @@ const Timeline: React.FC<TimelineProps> = ({
           </defs>
           <Axis dimension='x' scale={xScale} formatTick={formatDate} />
           <Axis dimension='y' scale={yScale} label={label} />
-          <Line
-            type='area'
+          <Area
             data={data}
-            xAccessor={xAccessorScaled}
+            xAccessorScaled={xAccessorScaled}
             yAccessor={yAccessorScaled}
             y0Accessor={y0AccessorScaled}
             style={{ fill: `url(#${gradientId})` }}
