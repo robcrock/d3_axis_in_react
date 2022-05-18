@@ -1,19 +1,30 @@
-.Timeline {
+html {
+  box-sizing: border-box;
+}
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+body {
+  margin: 0px;
+}
+
+#root {
   width: 100vw;
   height: 100vh;
 }
 
-/* .Chart {
-  overflow: visible;
-} */
+.timeline {
+  width: 100%;
+  height: 100%;
+  padding: 4px;
+}
 
 .Chart text {
   fill: #95a5a6;
 }
-
-/* .Line {
-  transition: all 0.3s ease-out;
-} */
 
 .Line--type-line {
   fill: none;
@@ -39,7 +50,6 @@
 
 .Axis__tick {
   font-size: 0.8em;
-  /* transition: all 0.3s ease-out; */
 }
 
 .AxisHorizontal .Axis__tick {
@@ -49,16 +59,6 @@
 .AxisVertical .Axis__tick {
   dominant-baseline: middle;
   text-anchor: end;
-}
-
-.Circles__circle {
-  fill: #9980fa;
-  transition: all 0.3s ease-out;
-}
-
-.Bars__rect {
-  fill: #9980fa;
-  transition: all 0.3s ease-out;
 }
 
 .domain,

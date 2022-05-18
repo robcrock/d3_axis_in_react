@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import Chart from './Chart/Chart';
 import './Chart/Chart.css';
@@ -26,7 +26,7 @@ type TimelineProps = {
   label: string;
 };
 
-const Timeline = ({ data, xAccessor, yAccessor, label }: TimelineProps) => {
+const Timeline = ({ data, xAccessor, yAccessor }: TimelineProps) => {
   const wrapperRef: React.MutableRefObject<null> = useRef(null);
   const dimensions = useResizeObserver(wrapperRef);
 
@@ -36,13 +36,13 @@ const Timeline = ({ data, xAccessor, yAccessor, label }: TimelineProps) => {
   const xScale = d3
     .scaleTime()
     .domain([xMin, xMax])
-    .range([0, dimensions.boundedWidth]);
+    .range([0, dimensions.innerWidth]);
 
   const [yMin = 0, yMax = 0] = d3.extent(data, yAccessor);
   const yScale = d3
     .scaleLinear()
     .domain([yMin, yMax])
-    .range([dimensions.boundedHeight, 0])
+    .range([dimensions.innerHeight, 0])
     .nice();
 
   const xAccessorScaled = (d: Record) => xScale(xAccessor(d));
@@ -50,8 +50,8 @@ const Timeline = ({ data, xAccessor, yAccessor, label }: TimelineProps) => {
   const y0Scaled = yScale(yScale.domain()[0]);
 
   return (
-    <div className='Timeline' ref={wrapperRef}>
-      <DimensionContext.Provider value={dimensions}>
+    <DimensionContext.Provider value={dimensions}>
+      <div className='timeline' ref={wrapperRef}>
         <Chart>
           <defs>
             <Gradient
@@ -76,8 +76,8 @@ const Timeline = ({ data, xAccessor, yAccessor, label }: TimelineProps) => {
             yAccessorScaled={yAccessorScaled}
           />
         </Chart>
-      </DimensionContext.Provider>
-    </div>
+      </div>
+    </DimensionContext.Provider>
   );
 };
 

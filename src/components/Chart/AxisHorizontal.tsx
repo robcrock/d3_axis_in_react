@@ -16,17 +16,17 @@ const AxisHorizontal = ({
 }: AxisHorizontalProps) => {
   const dimensions = useContext(DimensionContext);
 
-  const numberOfTicks = dimensions.boundedWidth / 100;
+  const numberOfTicks = dimensions.innerWidth / 100;
 
   const ticks = scale.ticks(numberOfTicks);
 
   return (
     <g
       className='Axis AxisHorizontal'
-      transform={`translate(0, ${dimensions.boundedHeight})`}
+      transform={`translate(0, ${dimensions.innerHeight})`}
       {...props}
     >
-      <line className='Axis__line' x2={dimensions.boundedWidth} />
+      <line className='Axis__line' x2={dimensions.innerWidth} />
 
       {ticks?.map((tick, i) => (
         <text
@@ -41,7 +41,7 @@ const AxisHorizontal = ({
       {label && (
         <text
           className='Axis__label'
-          transform={`translate(${dimensions.boundedWidth / 2}, 60)`}
+          transform={`translate(${dimensions.innerWidth / 2}, 60)`}
         >
           {label}
         </text>

@@ -8,12 +8,7 @@ const dateAccessor = (d: Record) => d.date;
 const temperatureAccessor = (d: Record) => d.temperature;
 
 const App = () => {
-  const [data, setData] = useState(getTimelineData());
-
-  useEffect(() => {
-    console.log(getTimelineData());
-    setData(getTimelineData());
-  }, []);
+  const [data] = useState(getTimelineData());
 
   return (
     <>

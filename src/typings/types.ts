@@ -5,8 +5,8 @@ export interface Dimensions {
   marginRight: number;
   marginBottom: number;
   marginLeft: number;
-  boundedHeight: number;
-  boundedWidth: number;
+  innerHeight: number;
+  innerWidth: number;
 }
 
 export type Record = {

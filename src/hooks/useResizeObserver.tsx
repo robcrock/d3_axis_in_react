@@ -1,20 +1,10 @@
 import { MutableRefObject, useEffect, useState } from 'react';
 import { Dimensions } from '../typings/types';
 
-const defaulSetting: Dimensions = {
-  height: 0,
-  width: 0,
-  marginTop: 0,
-  marginRight: 0,
-  marginBottom: 0,
-  marginLeft: 0,
-  boundedHeight: 0,
-  boundedWidth: 0,
-};
-
-const combineChartDimensions = (dimensions: any) => {
-  let parsedDimensions = {
+const applyMarginConvention = (dimensions: Dimensions): Dimensions => {
+  let dimensionsWithMargin = {
     ...dimensions,
+    // Set up your margin convention here.
     marginTop: 40,
     marginRight: 30,
     marginBottom: 100,
@@ -22,24 +12,35 @@ const combineChartDimensions = (dimensions: any) => {
   };
 
   return {
-    ...parsedDimensions,
-    boundedHeight: Math.max(
-      parsedDimensions.height -
-        parsedDimensions.marginTop -
-        parsedDimensions.marginBottom,
+    ...dimensionsWithMargin,
+    innerHeight: Math.max(
+      dimensionsWithMargin.height -
+        dimensionsWithMargin.marginTop -
+        dimensionsWithMargin.marginBottom,
       0,
     ),
-    boundedWidth: Math.max(
-      parsedDimensions.width -
-        parsedDimensions.marginLeft -
-        parsedDimensions.marginRight,
+    innerWidth: Math.max(
+      dimensionsWithMargin.width -
+        dimensionsWithMargin.marginLeft -
+        dimensionsWithMargin.marginRight,
       0,
     ),
   };
 };
 
 const useResizeObserver = (ref: MutableRefObject<null>) => {
-  const [dimensions, setDimensions] = useState(defaulSetting);
+  const [height, setHeight] = useState(0);
+  const [width, setWidth] = useState(0);
+  const dimensions = applyMarginConvention({
+    height,
+    width,
+    marginTop: 0,
+    marginRight: 0,
+    marginBottom: 0,
+    marginLeft: 0,
+    innerHeight: 0,
+    innerWidth: 0,
+  });
 
   useEffect(() => {
     const observeTarget = ref.current;
@@ -49,12 +50,12 @@ const useResizeObserver = (ref: MutableRefObject<null>) => {
 
       const entry = entries[0];
 
-      setDimensions(
-        combineChartDimensions({
-          width: entry.contentRect.width,
-          height: entry.contentRect.height,
-        }),
-      );
+      if (height !== entry.contentRect.height) {
+        setHeight(entry.contentRect.height);
+      }
+      if (width !== entry.contentRect.width) {
+        setWidth(entry.contentRect.width);
+      }
     });
 
     resizeObserver.observe(observeTarget!);
@@ -62,9 +63,15 @@ const useResizeObserver = (ref: MutableRefObject<null>) => {
     return () => {
       resizeObserver.unobserve(observeTarget!);
     };
-  }, [ref]);
+  }, [height, width]);
 
-  return dimensions;
+  const newDimensions = applyMarginConvention({
+    ...dimensions,
+    width: dimensions.width || width,
+    height: dimensions.height || height,
+  });
+
+  return newDimensions;
 };
 
 export default useResizeObserver;

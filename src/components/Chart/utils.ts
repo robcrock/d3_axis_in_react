@@ -16,7 +16,7 @@ export const combineChartDimensions = (dimensions: Dimensions) => {
 
   return {
     ...parsedDimensions,
-    boundedHeight: Math.max(
+    innerHeight: Math.max(
       parsedDimensions.height -
         parsedDimensions.marginTop -
         parsedDimensions.marginBottom,

@@ -51,19 +51,19 @@ export function AxisHorizontal({
   ...props
 }: AxisHorizontalProps) {
   const numberOfTicks =
-    dimensions.boundedWidth < 600
-      ? dimensions.boundedWidth / 100
-      : dimensions.boundedWidth / 250;
+    dimensions.innerWidth < 600
+      ? dimensions.innerWidth / 100
+      : dimensions.innerWidth / 250;
 
   const ticks = scale.ticks(numberOfTicks);
 
   return (
     <g
       className='Axis AxisHorizontal'
-      transform={`translate(0, ${dimensions.boundedHeight})`}
+      transform={`translate(0, ${dimensions.innerHeight})`}
       {...props}
     >
-      <line className='Axis__line' x2={dimensions.boundedWidth} />
+      <line className='Axis__line' x2={dimensions.innerWidth} />
 
       {ticks?.map((tick, i) => (
         <text
@@ -78,7 +78,7 @@ export function AxisHorizontal({
       {label && (
         <text
           className='Axis__label'
-          transform={`translate(${dimensions.boundedWidth / 2}, 60)`}
+          transform={`translate(${dimensions.innerWidth / 2}, 60)`}
         >
           {label}
         </text>
@@ -99,13 +99,13 @@ export function AxisVertical({
   scale,
   ...props
 }: AxisVerticalProps) {
-  const numberOfTicks = dimensions.boundedHeight / 70;
+  const numberOfTicks = dimensions.innerHeight / 70;
 
   const ticks = scale.ticks(numberOfTicks);
 
   return (
     <g className='Axis AxisVertical' {...props}>
-      <line className='Axis__line' y2={dimensions.boundedHeight} />
+      <line className='Axis__line' y2={dimensions.innerHeight} />
 
       {ticks.map((tick, i) => (
         <text
@@ -122,7 +122,7 @@ export function AxisVertical({
           className='Axis__label'
           style={{
             transform: `translate(-56px, ${
-              dimensions.boundedHeight / 2
+              dimensions.innerHeight / 2
             }px) rotate(-90deg)`,
           }}
         >
