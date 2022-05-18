@@ -11,6 +11,8 @@ import { Dimensions } from '../typings/types';
 import { Record } from '../typings/types';
 import Line from './Chart/Line';
 import Area from './Chart/Area';
+import AxisHorizontal from './Chart/AxisHorizontal';
+import AxisVertical from './Chart/AxisVertical';
 
 export const DimensionContext = React.createContext<Dimensions | null>(null);
 
@@ -59,8 +61,8 @@ const Timeline = ({ data, xAccessor, yAccessor, label }: TimelineProps) => {
               y2='100%'
             />
           </defs>
-          <Axis dimension='x' scale={xScale} formatTick={formatDate} />
-          <Axis dimension='y' scale={yScale} label={label} />
+          <AxisHorizontal label='Date' scale={xScale} formatTick={formatDate} />
+          <AxisVertical label='Temperature' scale={yScale} />
           <Area
             data={data}
             xAccessorScaled={xAccessorScaled}

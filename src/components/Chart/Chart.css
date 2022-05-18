@@ -39,7 +39,7 @@
 
 .Axis__tick {
   font-size: 0.8em;
-  transition: all 0.3s ease-out;
+  /* transition: all 0.3s ease-out; */
 }
 
 .AxisHorizontal .Axis__tick {
