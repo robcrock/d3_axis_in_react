@@ -42,13 +42,17 @@ const Timeline = ({ data, xAccessor, yAccessor, label }: TimelineProps) => {
   const [yMin = 0, yMax = 0] = d3.extent(data, yAccessor);
   const yScale = d3
     .scaleLinear()
-    .domain([yMin, yMax])
+    .domain([0, yMax])
     .range([dimensions.innerHeight, 0])
     .nice();
 
+  const y0Accessor = (d: Record) => d.min_temp_F;
+  const y1Accessor = (d: Record) => d.max_temp_F;
+
   const xAccessorScaled = (d: Record) => xScale(xAccessor(d));
   const yAccessorScaled = (d: Record) => yScale(yAccessor(d));
-  const y0Scaled = yScale(yScale.domain()[0]);
+  const y0AccessorScaled = (d: any) => yScale(y0Accessor(d));
+  const y1AccessorScaled = (d: any) => yScale(y1Accessor(d));
   const keyAccessor = (d, i) => i;
 
   return (
@@ -65,19 +69,18 @@ const Timeline = ({ data, xAccessor, yAccessor, label }: TimelineProps) => {
           </defs>
           <AxisHorizontal scale={xScale} formatTick={formatDate} />
           <AxisVertical label={label} scale={yScale} />
-          {/* <Area
+          <Area
             data={data}
             xAccessorScaled={xAccessorScaled}
-            yAccessorScaled={yAccessorScaled}
-            y0Scaled={y0Scaled}
+            y0AccessorScaled={y0AccessorScaled}
+            y1AccessorScaled={y1AccessorScaled}
             style={{ fill: `url(#${gradientId})` }}
-          /> */}
+          />
           <Line
             data={data}
             xAccessorScaled={xAccessorScaled}
             yAccessorScaled={yAccessorScaled}
           />
-
           <Circles
             data={data}
             keyAccessor={keyAccessor}

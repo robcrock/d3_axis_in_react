@@ -38,13 +38,9 @@ const AxisHorizontal = ({
       <line className='Axis__line' x2={dimensions.innerWidth} />
 
       {ticks?.map((tick, i) => (
-        <g transform={`translate(${scale(tick)}, 25)`}>
+        <g key={i} transform={`translate(${scale(tick)}, 25)`}>
           <line stroke='#ccc' y2='6' transform={`translate(0, -25)`} />
-          <text
-            key={i}
-            className='Axis__tick'
-            transform={transformTickText(tick)}
-          >
+          <text className='Axis__tick' transform={transformTickText(tick)}>
             {formatTick?.(tick as Date)}
           </text>
         </g>
