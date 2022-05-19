@@ -1,14 +1,14 @@
-import { MutableRefObject, useEffect, useState } from 'react';
+import { MutableRefObject, useEffect, useRef, useState } from 'react';
 import { Dimensions } from '../typings/types';
 
 const applyMarginConvention = (dimensions: Dimensions): Dimensions => {
   let dimensionsWithMargin = {
-    ...dimensions,
     // Set up your margin convention here.
     marginTop: 40,
     marginRight: 30,
-    marginBottom: 80,
+    marginBottom: 40,
     marginLeft: 75,
+    ...dimensions,
   };
 
   return {
@@ -28,21 +28,16 @@ const applyMarginConvention = (dimensions: Dimensions): Dimensions => {
   };
 };
 
-const useResizeObserver = (ref: MutableRefObject<null>) => {
+const useResizeObserver = (marginConvention: Dimensions) => {
+  const ref = useRef(null);
+  const dimensions = applyMarginConvention(marginConvention);
+
   const [height, setHeight] = useState(0);
   const [width, setWidth] = useState(0);
-  const dimensions = applyMarginConvention({
-    height,
-    width,
-    marginTop: 0,
-    marginRight: 0,
-    marginBottom: 0,
-    marginLeft: 0,
-    innerHeight: 0,
-    innerWidth: 0,
-  });
 
   useEffect(() => {
+    if (dimensions.width && dimensions.height) return [ref, dimensions];
+
     const observeTarget = ref.current;
     const resizeObserver = new ResizeObserver(entries => {
       if (!Array.isArray(entries)) return;
@@ -58,12 +53,12 @@ const useResizeObserver = (ref: MutableRefObject<null>) => {
       }
     });
 
-    resizeObserver.observe(observeTarget!);
+    resizeObserver.observe(observeTarget);
 
     return () => {
-      resizeObserver.unobserve(observeTarget!);
+      resizeObserver.unobserve(observeTarget);
     };
-  }, [height, width]);
+  }, [marginConvention, height, width, dimensions]);
 
   const newDimensions = applyMarginConvention({
     ...dimensions,
@@ -71,7 +66,7 @@ const useResizeObserver = (ref: MutableRefObject<null>) => {
     height: dimensions.height || height,
   });
 
-  return newDimensions;
+  return [ref, newDimensions];
 };
 
 export default useResizeObserver;

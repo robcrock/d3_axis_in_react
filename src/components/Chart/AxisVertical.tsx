@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import * as d3 from 'd3';
-import { DimensionContext } from '../Timeline';
+import { ChartContext } from './Chart';
 
 type AxisVerticalProps = {
   label?: string;
@@ -8,7 +8,7 @@ type AxisVerticalProps = {
 };
 
 const AxisVertical = ({ label, scale, ...props }: AxisVerticalProps) => {
-  const dimensions = useContext(DimensionContext);
+  const dimensions = useContext(ChartContext);
 
   const numberOfTicks = dimensions.innerHeight / 70;
 

@@ -9,9 +9,9 @@ export const combineChartDimensions = (dimensions: Dimensions) => {
   let parsedDimensions = {
     ...dimensions,
     marginTop: 40,
-    marginRight: 30,
-    marginBottom: 40,
-    marginLeft: 75,
+    marginRight: 170,
+    marginBottom: 25,
+    marginLeft: 40,
   };
 
   return {
@@ -54,11 +54,9 @@ export const useChartDimensions = (
       const entry = entries[0];
 
       if (width !== entry.contentRect.width) {
-        console.log('Width changed');
         changeWidth(entry.contentRect.width);
       }
       if (height !== entry.contentRect.height) {
-        console.log('Height changed');
         changeHeight(entry.contentRect.height);
       }
     });

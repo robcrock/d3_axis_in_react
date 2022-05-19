@@ -1,15 +1,12 @@
-import React, { useContext } from 'react';
-import { DimensionContext } from '../Timeline';
+import React, { createContext, useContext } from 'react';
+
 import './Chart.css';
 
-interface ChartProps {
-  children: React.ReactNode;
-}
+export const ChartContext = createContext();
+export const useDimensionsContext = () => useContext(ChartContext);
 
-const Chart = ({ children }: ChartProps) => {
-  const dimensions = useContext(DimensionContext);
-
-  return (
+const Chart = ({ dimensions, children }) => (
+  <ChartContext.Provider value={dimensions}>
     <svg className='Chart' width={dimensions.width} height={dimensions.height}>
       <g
         transform={`translate(${dimensions.marginLeft}, ${dimensions.marginTop})`}
@@ -17,7 +14,7 @@ const Chart = ({ children }: ChartProps) => {
         {children}
       </g>
     </svg>
-  );
-};
+  </ChartContext.Provider>
+);
 
 export default Chart;

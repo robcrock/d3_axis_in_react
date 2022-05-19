@@ -15,9 +15,8 @@ import AxisHorizontal from './Chart/AxisHorizontal';
 import AxisVertical from './Chart/AxisVertical';
 import Circles from './Chart/Circles';
 
-export const DimensionContext = React.createContext<Dimensions | null>(null);
-
-const formatDate = d3.timeFormat('%b');
+// const formatDate = d3.timeFormat('%b');
+const formatDate = d3.timeFormat('%-b %-d');
 const gradientColors = ['rgb(226, 222, 243)', '#f8f9fa'];
 
 type TimelineProps = {
@@ -28,8 +27,16 @@ type TimelineProps = {
 };
 
 const Timeline = ({ data, xAccessor, yAccessor, label }: TimelineProps) => {
-  const wrapperRef: React.MutableRefObject<null> = useRef(null);
-  const dimensions = useResizeObserver(wrapperRef);
+  const [ref, dimensions] = useResizeObserver({
+    marginTop: 40,
+    marginRight: 170,
+    marginBottom: 40,
+    marginLeft: 80,
+    height: 0,
+    width: 0,
+    innerHeight: 0,
+    innerWidth: 0,
+  });
 
   const gradientId = useUniqueId('Timeline-gradient');
 
@@ -49,47 +56,42 @@ const Timeline = ({ data, xAccessor, yAccessor, label }: TimelineProps) => {
   const y0Accessor = (d: Record) => d.min_temp_F;
   const y1Accessor = (d: Record) => d.max_temp_F;
 
-  const xAccessorScaled = (d: Record) => xScale(xAccessor(d));
-  const yAccessorScaled = (d: Record) => yScale(yAccessor(d));
-  const y0AccessorScaled = (d: any) => yScale(y0Accessor(d));
+  const xAccessorScaled = d => xScale(xAccessor(d));
+  const yAccessorScaled = d => yScale(yAccessor(d));
+  // const y0AccessorScaled = (d: any) => yScale(y0Accessor(d))
+
+  const y0AccessorScaled = yScale(yScale.domain()[0]);
   const y1AccessorScaled = (d: any) => yScale(y1Accessor(d));
   const keyAccessor = (d, i) => i;
 
   return (
-    <DimensionContext.Provider value={dimensions}>
-      <div className='timeline' ref={wrapperRef}>
-        <Chart>
-          <defs>
-            <Gradient
-              id={gradientId}
-              colors={gradientColors}
-              x2='0'
-              y2='100%'
-            />
-          </defs>
-          <AxisHorizontal scale={xScale} formatTick={formatDate} />
-          <AxisVertical label={label} scale={yScale} />
-          <Area
-            data={data}
-            xAccessorScaled={xAccessorScaled}
-            y0AccessorScaled={y0AccessorScaled}
-            y1AccessorScaled={y1AccessorScaled}
-            style={{ fill: `url(#${gradientId})` }}
-          />
-          <Line
-            data={data}
-            xAccessorScaled={xAccessorScaled}
-            yAccessorScaled={yAccessorScaled}
-          />
-          <Circles
-            data={data}
-            keyAccessor={keyAccessor}
-            xAccessor={xAccessorScaled}
-            yAccessor={yAccessorScaled}
-          />
-        </Chart>
-      </div>
-    </DimensionContext.Provider>
+    <div className='Timeline' ref={ref}>
+      <Chart dimensions={dimensions}>
+        <defs>
+          <Gradient id={gradientId} colors={gradientColors} x2='0' y2='100%' />
+        </defs>
+        <AxisHorizontal scale={xScale} formatTick={formatDate} />
+        <AxisVertical label={label} scale={yScale} />
+        <Area
+          data={data}
+          xAccessorScaled={xAccessorScaled}
+          yAccessorScaled={yAccessorScaled}
+          y0AccessorScaled={y0AccessorScaled}
+          style={{ fill: `url(#${gradientId})` }}
+        />
+        <Line
+          data={data}
+          xAccessorScaled={xAccessorScaled}
+          yAccessorScaled={yAccessorScaled}
+        />
+        <Circles
+          data={data}
+          keyAccessor={keyAccessor}
+          xAccessor={xAccessorScaled}
+          yAccessor={yAccessorScaled}
+        />
+      </Chart>
+    </div>
   );
 };
 
