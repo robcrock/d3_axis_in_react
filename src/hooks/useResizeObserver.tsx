@@ -7,7 +7,7 @@ const applyMarginConvention = (dimensions: Dimensions): Dimensions => {
     // Set up your margin convention here.
     marginTop: 40,
     marginRight: 30,
-    marginBottom: 100,
+    marginBottom: 80,
     marginLeft: 75,
   };
 

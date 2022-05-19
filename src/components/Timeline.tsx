@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import React, { useEffect, useRef } from 'react';
+import React, { useRef } from 'react';
 
 import Chart from './Chart/Chart';
 import './Chart/Chart.css';
@@ -13,10 +13,11 @@ import Line from './Chart/Line';
 import Area from './Chart/Area';
 import AxisHorizontal from './Chart/AxisHorizontal';
 import AxisVertical from './Chart/AxisVertical';
+import Circles from './Chart/Circles';
 
 export const DimensionContext = React.createContext<Dimensions | null>(null);
 
-const formatDate = d3.timeFormat('%-b %-d');
+const formatDate = d3.timeFormat('%b');
 const gradientColors = ['rgb(226, 222, 243)', '#f8f9fa'];
 
 type TimelineProps = {
@@ -26,7 +27,7 @@ type TimelineProps = {
   label: string;
 };
 
-const Timeline = ({ data, xAccessor, yAccessor }: TimelineProps) => {
+const Timeline = ({ data, xAccessor, yAccessor, label }: TimelineProps) => {
   const wrapperRef: React.MutableRefObject<null> = useRef(null);
   const dimensions = useResizeObserver(wrapperRef);
 
@@ -48,6 +49,7 @@ const Timeline = ({ data, xAccessor, yAccessor }: TimelineProps) => {
   const xAccessorScaled = (d: Record) => xScale(xAccessor(d));
   const yAccessorScaled = (d: Record) => yScale(yAccessor(d));
   const y0Scaled = yScale(yScale.domain()[0]);
+  const keyAccessor = (d, i) => i;
 
   return (
     <DimensionContext.Provider value={dimensions}>
@@ -61,19 +63,26 @@ const Timeline = ({ data, xAccessor, yAccessor }: TimelineProps) => {
               y2='100%'
             />
           </defs>
-          <AxisHorizontal label='Date' scale={xScale} formatTick={formatDate} />
-          <AxisVertical label='Temperature' scale={yScale} />
-          <Area
+          <AxisHorizontal scale={xScale} formatTick={formatDate} />
+          <AxisVertical label={label} scale={yScale} />
+          {/* <Area
             data={data}
             xAccessorScaled={xAccessorScaled}
             yAccessorScaled={yAccessorScaled}
             y0Scaled={y0Scaled}
             style={{ fill: `url(#${gradientId})` }}
-          />
+          /> */}
           <Line
             data={data}
             xAccessorScaled={xAccessorScaled}
             yAccessorScaled={yAccessorScaled}
+          />
+
+          <Circles
+            data={data}
+            keyAccessor={keyAccessor}
+            xAccessor={xAccessorScaled}
+            yAccessor={yAccessorScaled}
           />
         </Chart>
       </div>

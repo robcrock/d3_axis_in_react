@@ -28,7 +28,7 @@ body {
 
 .Line--type-line {
   fill: none;
-  stroke: #9980fa;
+  stroke: #b4a1ff;
   stroke-width: 2px;
   stroke-linecap: round;
 }
@@ -59,6 +59,12 @@ body {
 .AxisVertical .Axis__tick {
   dominant-baseline: middle;
   text-anchor: end;
+}
+
+.Circles__circle {
+  fill: #9980fa;
+  stroke: #fff;
+  stroke-width: 3px;
 }
 
 .domain,

@@ -17,6 +17,7 @@ const Line = ({
   const lineGenerator = d3
     .line()
     .x(xAccessorScaled)
+
     .y(yAccessorScaled)
     .curve(d3.curveMonotoneX);
 
