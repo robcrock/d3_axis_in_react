@@ -1,7 +1,15 @@
 import { MutableRefObject, useEffect, useRef, useState } from 'react';
 import { Dimensions } from '../typings/types';
 
-const applyMarginConvention = (dimensions: Dimensions): Dimensions => {
+type MarginKeys = 'marginTop' | 'marginRight' | 'marginLeft' | 'marginBottom';
+// Here we need to Omit a few properties so that TS doesn't compalin about
+// us having redundant properties on our dimensions object.
+type DimensionsWithMarginDefaults = Omit<Dimensions, MarginKeys> &
+  Partial<Pick<Dimensions, MarginKeys>>;
+
+const applyMarginConvention = (
+  dimensions: DimensionsWithMarginDefaults,
+): Dimensions => {
   let dimensionsWithMargin = {
     // Set up your margin convention here.
     marginTop: 40,
@@ -29,14 +37,16 @@ const applyMarginConvention = (dimensions: Dimensions): Dimensions => {
 };
 
 const useResizeObserver = (marginConvention: Dimensions) => {
-  const ref = useRef(null);
+  const ref = useRef<HTMLDivElement>(null);
   const dimensions = applyMarginConvention(marginConvention);
 
   const [height, setHeight] = useState(0);
   const [width, setWidth] = useState(0);
 
   useEffect(() => {
-    if (dimensions.width && dimensions.height) return [ref, dimensions];
+    if (dimensions.width && dimensions.height) return;
+    // return [ref, dimensions];
+    if (!ref.current) return;
 
     const observeTarget = ref.current;
     const resizeObserver = new ResizeObserver(entries => {

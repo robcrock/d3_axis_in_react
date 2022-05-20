@@ -1,33 +1,40 @@
 import * as d3 from 'd3';
-import React, { useRef } from 'react';
+import React from 'react';
 
 import Chart from './Chart/Chart';
 import './Chart/Chart.css';
-import Axis from './Chart/Axis';
 import Gradient from './Chart/Gradient';
 import { useUniqueId } from './Chart/utils';
 import useResizeObserver from '../hooks/useResizeObserver';
-import { Dimensions } from '../typings/types';
-import { Record } from '../typings/types';
 import Line from './Chart/Line';
 import Area from './Chart/Area';
 import AxisHorizontal from './Chart/AxisHorizontal';
 import AxisVertical from './Chart/AxisVertical';
 import Circles from './Chart/Circles';
+import { DataRecord, AccessorType } from '../typings/types';
 
 // const formatDate = d3.timeFormat('%b');
 const formatDate = d3.timeFormat('%-b %-d');
 const gradientColors = ['rgb(226, 222, 243)', '#f8f9fa'];
 
-type TimelineProps = {
-  data: Record[];
-  xAccessor: (d: Record) => Date;
-  yAccessor: (d: Record) => number;
+// What's happening here is that we're retrun the value of the key of a
+// property of the datum we're passing into ValueOf
+type ValueOf<T> = T[keyof T];
+
+type TimelineProps<Data extends DataRecord> = {
+  data: Data[];
+  xAccessor: AccessorType;
+  yAccessor: AccessorType;
   label: string;
 };
 
-const Timeline = ({ data, xAccessor, yAccessor, label }: TimelineProps) => {
-  const [ref, dimensions] = useResizeObserver({
+const Timeline = <Data extends DataRecord>({
+  data,
+  xAccessor,
+  yAccessor,
+  label,
+}: TimelineProps<Data>) => {
+  const [wrapperRef, dimensions] = useResizeObserver({
     marginTop: 40,
     marginRight: 170,
     marginBottom: 40,
@@ -53,19 +60,17 @@ const Timeline = ({ data, xAccessor, yAccessor, label }: TimelineProps) => {
     .range([dimensions.innerHeight, 0])
     .nice();
 
-  const y0Accessor = (d: Record) => d.min_temp_F;
-  const y1Accessor = (d: Record) => d.max_temp_F;
+  const y0Accessor = (d: Data) => d.min_temp_F;
+  const y1Accessor = (d: Data) => d.max_temp_F;
 
-  const xAccessorScaled = d => xScale(xAccessor(d));
-  const yAccessorScaled = d => yScale(yAccessor(d));
-  // const y0AccessorScaled = (d: any) => yScale(y0Accessor(d))
-
-  const y0AccessorScaled = yScale(yScale.domain()[0]);
-  const y1AccessorScaled = (d: any) => yScale(y1Accessor(d));
-  const keyAccessor = (d, i) => i;
+  const xAccessorScaled: AccessorType = d => xScale(xAccessor(d));
+  const yAccessorScaled: AccessorType = d => yScale(yAccessor(d));
+  const y0AccessorScaled: number = yScale(yScale.domain()[0]);
+  const y1AccessorScaled: AccessorType = d => yScale(y1Accessor(d));
+  const keyAccessor: AccessorType = (d, i) => i;
 
   return (
-    <div className='Timeline' ref={ref}>
+    <div className='Timeline' ref={wrapperRef}>
       <Chart dimensions={dimensions}>
         <defs>
           <Gradient id={gradientId} colors={gradientColors} x2='0' y2='100%' />

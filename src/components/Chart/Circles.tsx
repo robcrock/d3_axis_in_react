@@ -1,12 +1,12 @@
 import React from 'react';
-import { Record } from '../../typings/types';
+import { DataRecord, AccessorType } from '../../typings/types';
 
 type CirclesProps = {
-  data: Record[];
-  keyAccessor: () => number;
-  xAccessor: () => number;
-  yAccessor: () => number;
-  radius: () => number | number;
+  data: DataRecord[];
+  keyAccessor: AccessorType;
+  xAccessor: AccessorType;
+  yAccessor: AccessorType;
+  radius?: AccessorType | number;
 };
 
 const Circles = ({
@@ -21,9 +21,9 @@ const Circles = ({
       {data.map((d, i) => (
         <circle
           className='Circles__circle'
-          key={keyAccessor(d, i)}
-          cx={xAccessor(d, i)}
-          cy={yAccessor(d, i)}
+          key={keyAccessor(d)}
+          cx={xAccessor(d)}
+          cy={yAccessor(d)}
           r={typeof radius == 'function' ? radius(d) : radius}
         />
       ))}

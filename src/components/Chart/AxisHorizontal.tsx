@@ -45,6 +45,15 @@ const AxisHorizontal = ({
         </text>
       ))}
 
+      {/* {ticks?.map((tick, i) => (
+        <g key={i} transform={`translate(${scale(tick)}, 25)`}>
+          <line stroke='#ccc' y2='6' transform={`translate(0, -25)`} />
+          <text className='Axis__tick' transform={transformTickText(tick)}>
+            {formatTick?.(tick as Date)}
+          </text>
+        </g>
+      ))} */}
+
       {label && (
         <text
           className='Axis__label'
@@ -54,31 +63,6 @@ const AxisHorizontal = ({
         </text>
       )}
     </g>
-    // <g
-    //   className='Axis AxisHorizontal'
-    //   transform={`translate(0, ${dimensions.innerHeight})`}
-    //   {...props}
-    // >
-    //   <line className='Axis__line' x2={dimensions.innerWidth} />
-
-    //   {ticks?.map((tick, i) => (
-    //     <g key={i} transform={`translate(${scale(tick)}, 25)`}>
-    //       <line stroke='#ccc' y2='6' transform={`translate(0, -25)`} />
-    //       <text className='Axis__tick' transform={transformTickText(tick)}>
-    //         {formatTick?.(tick as Date)}
-    //       </text>
-    //     </g>
-    //   ))}
-
-    //   {label && (
-    //     <text
-    //       className='Axis__label'
-    //       transform={`translate(${dimensions.innerWidth / 2}, 60)`}
-    //     >
-    //       {label}
-    //     </text>
-    //   )}
-    // </g>
   );
 };
 

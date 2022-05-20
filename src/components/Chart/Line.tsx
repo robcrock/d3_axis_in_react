@@ -1,11 +1,11 @@
 import React from 'react';
 import * as d3 from 'd3';
-import { Record } from '../../typings/types';
+import { DataRecord, AccessorType } from '../../typings/types';
 
 type LineProps = {
-  data: Record[];
-  xAccessorScaled: (d: Record) => number;
-  yAccessorScaled: (d: Record) => number;
+  data: DataRecord[];
+  xAccessorScaled: AccessorType;
+  yAccessorScaled: AccessorType;
 };
 
 const Line = ({
@@ -25,7 +25,7 @@ const Line = ({
     <path
       {...props}
       className={`Line Line--type-line`}
-      d={lineGenerator(data)}
+      d={lineGenerator(data as Iterable<[number, number]>)!}
     />
   );
 };

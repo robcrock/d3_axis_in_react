@@ -2,17 +2,15 @@ import React, { useEffect, useRef, useState } from 'react';
 import Timeline from './components/Timeline';
 import * as d3 from 'd3';
 import { getTimelineData } from '../public/data/dummyData';
-import { Record } from './typings/types';
+import { DataRecord } from './typings/types';
 
 import './styles.css';
 
-const parseDate = d3.timeParse('%m/%d/%Y');
-const dateAccessor = (d: Record) => d.date;
-const averageTemperatureAccessor = (d: Record) => d.avg_temp_F;
-const temperatureAccessor = (d: Record) => d.temperature;
-const precipitationAccessor = (d: Record) => d.total_precip_in;
+const dateAccessor = (d: DataRecord) => d.date;
+const temperatureAccessor = (d: DataRecord) => d.temperature;
 
-const getData = () => ({
+type GetDataType = () => { [property: string]: DataRecord[] };
+const getData: GetDataType = () => ({
   timeline: getTimelineData(),
 });
 
@@ -48,22 +46,25 @@ const App = () => {
 
 export default App;
 
-function useInterval(callback, delay) {
-  const savedCallback = useRef();
+// Documented in usehooks-ts https://usehooks-ts.com/react-hook/use-interval
+function useInterval(callback: () => void, delay: number | null) {
+  const savedCallback = useRef(callback);
 
   // Remember the latest callback.
   useEffect(() => {
     savedCallback.current = callback;
-  });
+  }, [callback]);
 
   // Set up the interval.
   useEffect(() => {
-    function tick() {
-      savedCallback.current();
+    // Don't schedule if no delay is specified.
+    // Note: 0 is a valid value for delay.
+    if (!delay && delay !== 0) {
+      return;
     }
-    if (delay !== null) {
-      let id = setInterval(tick, delay);
-      return () => clearInterval(id);
-    }
+
+    const id = setInterval(() => savedCallback.current(), delay);
+
+    return () => clearInterval(id);
   }, [delay]);
 }

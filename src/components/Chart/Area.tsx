@@ -1,12 +1,12 @@
 import React from 'react';
 import * as d3 from 'd3';
-import { Record } from '../../typings/types';
+import { DataRecord, AccessorType } from '../../typings/types';
 
 type AreaProps = {
-  data: Record[];
-  xAccessorScaled: (d: Record) => number;
-  yAccessorScaled: (d: Record) => number;
-  y0AccessorScaled: (d: Record) => number | number;
+  data: DataRecord[];
+  xAccessorScaled: AccessorType;
+  yAccessorScaled: AccessorType;
+  y0AccessorScaled: number;
   style: { fill: string };
 };
 
@@ -28,7 +28,7 @@ const Area = ({
     <path
       {...props}
       className={`Line Line--type-area`}
-      d={areaGenerator(data)}
+      d={areaGenerator(data as Iterable<[number, number]>)!}
     />
   );
 };
