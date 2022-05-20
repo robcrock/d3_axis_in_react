@@ -10,6 +10,7 @@ type AxisVerticalProps = {
 const AxisVertical = ({ label, scale, ...props }: AxisVerticalProps) => {
   const dimensions = useContext(ChartContext);
 
+  if (!dimensions) return;
   const numberOfTicks = dimensions.innerHeight / 70;
 
   const ticks = scale.ticks(numberOfTicks);

@@ -2,10 +2,17 @@ import React, { createContext, useContext } from 'react';
 
 import './Chart.css';
 
-export const ChartContext = createContext();
+import { Dimensions } from '../../typings/types';
+
+export const ChartContext = createContext<Dimensions | undefined>(undefined);
 export const useDimensionsContext = () => useContext(ChartContext);
 
-const Chart = ({ dimensions, children }) => (
+type ChartProps = {
+  dimensions: Dimensions;
+  children: React.ReactNode;
+};
+
+const Chart = ({ dimensions, children }: ChartProps) => (
   <ChartContext.Provider value={dimensions}>
     <svg className='Chart' width={dimensions.width} height={dimensions.height}>
       <g

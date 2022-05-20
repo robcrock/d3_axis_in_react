@@ -16,16 +16,17 @@ const AxisHorizontal = ({
 }: AxisHorizontalProps) => {
   const dimensions = useContext(ChartContext);
 
+  if (!dimensions) return;
   const numberOfTicks = dimensions.innerWidth / 100;
 
   const ticks = scale.ticks(numberOfTicks);
 
-  function transformTickText(d) {
-    const currentMonth = d;
-    const nextMonth = new Date(2021, currentMonth.getMonth() + 1, 1);
-    const textNudge = (scale(nextMonth) - scale(currentMonth)) / 2;
-    return `translate(${textNudge}, -10)`;
-  }
+  // function transformTickText(d) {
+  //   const currentMonth = d;
+  //   const nextMonth = new Date(2021, currentMonth.getMonth() + 1, 1);
+  //   const textNudge = (scale(nextMonth) - scale(currentMonth)) / 2;
+  //   return `translate(${textNudge}, -10)`;
+  // }
 
   return (
     <g
