@@ -36,7 +36,7 @@ const Timeline = <Data extends DataRecord>({
 }: TimelineProps<Data>) => {
   const [wrapperRef, dimensions] = useResizeObserver({
     marginTop: 40,
-    marginRight: 170,
+    marginRight: 20,
     marginBottom: 40,
     marginLeft: 80,
     height: 0,
@@ -56,7 +56,7 @@ const Timeline = <Data extends DataRecord>({
   const [yMin = 0, yMax = 0] = d3.extent(data, yAccessor);
   const yScale = d3
     .scaleLinear()
-    .domain([0, yMax])
+    .domain([yMin, yMax])
     .range([dimensions.innerHeight, 0])
     .nice();
 
