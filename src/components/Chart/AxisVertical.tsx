@@ -1,16 +1,21 @@
-import React, { useContext } from 'react';
-import * as d3 from 'd3';
-import { ChartContext } from './Chart';
+import React from 'react';
+
+import useChartContext from '../../hooks/useChartContext';
 
 type AxisVerticalProps = {
   label?: string;
+  formatTick: (date: number) => string;
   scale: d3.ScaleLinear<number, number, never>;
 };
 
-const AxisVertical = ({ label, scale, ...props }: AxisVerticalProps) => {
-  const dimensions = useContext(ChartContext);
+const AxisVertical = ({
+  label,
+  formatTick,
+  scale,
+  ...props
+}: AxisVerticalProps) => {
+  const { dimensions } = useChartContext();
 
-  if (!dimensions) return;
   const numberOfTicks = dimensions.innerHeight / 70;
 
   const ticks = scale.ticks(numberOfTicks);
@@ -25,7 +30,7 @@ const AxisVertical = ({ label, scale, ...props }: AxisVerticalProps) => {
           className='Axis__tick'
           transform={`translate(-16, ${scale(tick)})`}
         >
-          {tick}
+          {formatTick(tick)}
         </text>
       ))}
 

@@ -1,25 +1,23 @@
 import React from 'react';
-import * as d3 from 'd3';
-import { DataRecord, AccessorType } from '../../typings/types';
+import { line, curveMonotoneX } from 'd3';
+
+import { AccessorFn } from '../../typings/types';
+
+import useChartContext from '../../hooks/useChartContext';
 
 type LineProps = {
-  data: DataRecord[];
-  xAccessorScaled: AccessorType;
-  yAccessorScaled: AccessorType;
+  xAccessorScaled: AccessorFn;
+  yAccessorScaled: AccessorFn;
 };
 
-const Line = ({
-  data,
-  xAccessorScaled,
-  yAccessorScaled,
-  ...props
-}: LineProps) => {
-  const lineGenerator = d3
-    .line()
+const Line = ({ xAccessorScaled, yAccessorScaled, ...props }: LineProps) => {
+  const { data } = useChartContext();
+
+  const lineGenerator = line()
     .x(xAccessorScaled)
 
     .y(yAccessorScaled)
-    .curve(d3.curveMonotoneX);
+    .curve(curveMonotoneX);
 
   return (
     <path

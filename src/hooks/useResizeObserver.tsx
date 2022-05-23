@@ -76,7 +76,7 @@ const useResizeObserver = (marginConvention: Dimensions) => {
     height: dimensions.height || height,
   });
 
-  return [ref, newDimensions];
+  return [ref, newDimensions] as const;
 };
 
 export default useResizeObserver;

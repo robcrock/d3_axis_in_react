@@ -11,7 +11,7 @@ import Area from './Chart/Area';
 import AxisHorizontal from './Chart/AxisHorizontal';
 import AxisVertical from './Chart/AxisVertical';
 import Circles from './Chart/Circles';
-import { DataRecord, AccessorType } from '../typings/types';
+import { DataRecord, AccessorFn } from '../typings/types';
 
 // const formatDate = d3.timeFormat('%b');
 const formatDate = d3.timeFormat('%-b %-d');
@@ -23,8 +23,8 @@ type ValueOf<T> = T[keyof T];
 
 type TimelineProps<Data extends DataRecord> = {
   data: Data[];
-  xAccessor: AccessorType;
-  yAccessor: AccessorType;
+  xAccessor: AccessorFn;
+  yAccessor: AccessorFn;
   label: string;
 };
 
@@ -63,11 +63,11 @@ const Timeline = <Data extends DataRecord>({
   const y0Accessor = (d: Data) => d.min_temp_F;
   const y1Accessor = (d: Data) => d.max_temp_F;
 
-  const xAccessorScaled: AccessorType = d => xScale(xAccessor(d));
-  const yAccessorScaled: AccessorType = d => yScale(yAccessor(d));
+  const xAccessorScaled: AccessorFn = d => xScale(xAccessor(d));
+  const yAccessorScaled: AccessorFn = d => yScale(yAccessor(d));
   const y0AccessorScaled: number = yScale(yScale.domain()[0]);
-  const y1AccessorScaled: AccessorType = d => yScale(y1Accessor(d));
-  const keyAccessor: AccessorType = (d, i) => i;
+  const y1AccessorScaled: AccessorFn = d => yScale(y1Accessor(d));
+  const keyAccessor: AccessorFn = (d, i) => i;
 
   return (
     <div className='Timeline' ref={wrapperRef}>
@@ -75,7 +75,7 @@ const Timeline = <Data extends DataRecord>({
         <defs>
           <Gradient id={gradientId} colors={gradientColors} x2='0' y2='100%' />
         </defs>
-        <AxisHorizontal scale={xScale} formatTick={formatDate} />
+        <AxisHorizontal scale={xScale} formatTick={formatDate} label={'Date'} />
         <AxisVertical label={label} scale={yScale} />
         <Area
           data={data}

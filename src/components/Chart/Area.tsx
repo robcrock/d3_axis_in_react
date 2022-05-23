@@ -1,11 +1,11 @@
 import React from 'react';
 import * as d3 from 'd3';
-import { DataRecord, AccessorType } from '../../typings/types';
+import { DataRecord, AccessorFn } from '../../typings/types';
 
 type AreaProps = {
   data: DataRecord[];
-  xAccessorScaled: AccessorType;
-  yAccessorScaled: AccessorType;
+  xAccessorScaled: AccessorFn;
+  yAccessorScaled: AccessorFn;
   y0AccessorScaled: number;
   style: { fill: string };
 };

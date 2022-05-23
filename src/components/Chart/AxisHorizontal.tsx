@@ -1,6 +1,6 @@
-import React, { useContext } from 'react';
-import * as d3 from 'd3';
-import { ChartContext } from './Chart';
+import React from 'react';
+
+import useChartContext from '../../hooks/useChartContext';
 
 type AxisHorizontalProps = {
   label?: string;
@@ -14,16 +14,19 @@ const AxisHorizontal = ({
   scale,
   ...props
 }: AxisHorizontalProps) => {
-  const dimensions = useContext(ChartContext);
+  const { dimensions } = useChartContext();
 
-  if (!dimensions) return;
   const numberOfTicks = dimensions.innerWidth / 100;
 
   const ticks = scale.ticks(numberOfTicks);
 
-  // function transformTickText(d) {
+  // function transformTickText(d: Date) {
   //   const currentMonth = d;
-  //   const nextMonth = new Date(2021, currentMonth.getMonth() + 1, 1);
+  //   const nextMonth = new Date(
+  //     currentMonth.getFullYear(),
+  //     currentMonth.getMonth() + 1,
+  //     1,
+  //   );
   //   const textNudge = (scale(nextMonth) - scale(currentMonth)) / 2;
   //   return `translate(${textNudge}, -10)`;
   // }
@@ -37,20 +40,19 @@ const AxisHorizontal = ({
       <line className='Axis__line' x2={dimensions.innerWidth} />
 
       {ticks.map((tick, i) => (
-        <text
-          key={tick}
-          className='Axis__tick'
-          transform={`translate(${scale(tick)}, 25)`}
-        >
-          {formatTick(tick)}
-        </text>
+        <g key={i} transform={`translate(${scale(tick)}, 25)`}>
+          <line stroke='#ccc' y2='6' transform={`translate(0, -25)`} />
+          <text key={i} className='Axis__tick'>
+            {formatTick(tick)}
+          </text>
+        </g>
       ))}
 
       {/* {ticks?.map((tick, i) => (
         <g key={i} transform={`translate(${scale(tick)}, 25)`}>
           <line stroke='#ccc' y2='6' transform={`translate(0, -25)`} />
           <text className='Axis__tick' transform={transformTickText(tick)}>
-            {formatTick?.(tick as Date)}
+            {formatTick(tick)}
           </text>
         </g>
       ))} */}
