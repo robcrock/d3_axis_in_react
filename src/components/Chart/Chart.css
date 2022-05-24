@@ -35,12 +35,12 @@ body {
   transition: all 0.3s ease-out;
 }
 
-.Line--type-line {
+/* .Line--type-line {
   fill: none;
   stroke: #9980fa;
   stroke-width: 3px;
   stroke-linecap: round;
-}
+} */
 
 .Line--type-area {
   fill: rgba(152, 128, 250, 0.185);

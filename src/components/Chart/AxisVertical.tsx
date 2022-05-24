@@ -24,14 +24,29 @@ const AxisVertical = ({
     <g className='Axis AxisVertical' {...props}>
       <line className='Axis__line' y2={dimensions.innerHeight} />
 
+      {/* {ticks.map((tick, i) => {
+        console.log('x1 ', dimensions.marginLeft);
+        console.log('x2 ', dimensions.innerWidth);
+        console.log('yScale tick ', scale(tick));
+
+      })} */}
       {ticks.map((tick, i) => (
-        <text
-          key={i}
-          className='Axis__tick'
-          transform={`translate(-16, ${scale(tick)})`}
-        >
-          {formatTick(tick)}
-        </text>
+        <g key={i}>
+          <line
+            x1={0}
+            y1={scale(tick)}
+            x2={dimensions.innerWidth}
+            y2={scale(tick)}
+            stroke='#EBEBEB'
+          ></line>
+          <text
+            key={i}
+            className='Axis__tick'
+            transform={`translate(-16, ${scale(tick)})`}
+          >
+            {formatTick(tick)}
+          </text>
+        </g>
       ))}
 
       {label && (

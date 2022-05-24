@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { json } from 'd3';
+import { autoType, json, tsv } from 'd3';
+import { groupBy } from 'lodash';
 
 import { DataRecord, AccessorFn } from './typings/types';
 // import { getTimelineData } from '../public/data/dummyData';
 
+import MultiLineChart from './components/MultiLineChart';
 import LineChart from './components/LineChart';
 
+// !IMPORTANT: Styles must be loaded last
 import './styles.css';
 
 // Define accessor functions
-const dateAccessor: AccessorFn = d => new Date(d.date);
+const dateAccessor: AccessorFn = d => new Date(d.collection_date);
 const temperatureAccessor: AccessorFn = d => d.temperatureMax;
+const positivityAccessor: AccessorFn = d => d.covid_positivity;
 
 // type GetDataType = () => { [k: string]: DataRecord[] };
 // const getData: GetDataType = () => ({
@@ -26,9 +30,11 @@ const App = () => {
     // Learned to type this function here https://blog.logrocket.com/async-await-in-typescript/
     const fetchData = async () => {
       try {
-        const data: DataRecord[] | undefined = await json(
-          '/data/my_weather_data.json',
+        const data: DataRecord[] | undefined = await tsv(
+          '/data/positivity_by_test_ordered_time.tsv',
+          autoType,
         );
+
         data && setData(data);
       } catch (error) {
         console.error(error);
@@ -40,14 +46,14 @@ const App = () => {
 
   return (
     <div className='App'>
-      <h1>Weather Dashboard</h1>
+      <h1>Not Really Dashboard</h1>
       <div className='App__charts'>
         {data ? (
-          <LineChart
+          <MultiLineChart
             data={data}
             xAccessor={dateAccessor}
-            yAccessor={temperatureAccessor}
-            label='Maximum Temperature'
+            yAccessor={positivityAccessor}
+            label='Positivity Rate'
           />
         ) : null}
       </div>

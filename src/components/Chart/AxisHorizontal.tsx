@@ -17,8 +17,8 @@ const AxisHorizontal = ({
   const { dimensions } = useChartContext();
 
   const numberOfTicks = dimensions.innerWidth / 100;
-
-  const ticks = scale.ticks(numberOfTicks);
+  console.log(numberOfTicks);
+  const ticks = scale.ticks(10);
 
   // function transformTickText(d: Date) {
   //   const currentMonth = d;

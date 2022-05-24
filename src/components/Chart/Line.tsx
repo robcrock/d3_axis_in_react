@@ -15,7 +15,6 @@ const Line = ({ xAccessorScaled, yAccessorScaled, ...props }: LineProps) => {
 
   const lineGenerator = line()
     .x(xAccessorScaled)
-
     .y(yAccessorScaled)
     .curve(curveMonotoneX);
 
