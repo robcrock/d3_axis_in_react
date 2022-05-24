@@ -2,11 +2,12 @@ import React from 'react';
 import { line, curveMonotoneX } from 'd3';
 import styled from 'styled-components';
 
-import { AccessorFn } from '../../typings/types';
+import { AccessorFn, DataRecord } from '../../typings/types';
 
 import useChartContext from '../../hooks/useChartContext';
 
 type LineProps = {
+  data: DataRecord[];
   xAccessorScaled: AccessorFn;
   yAccessorScaled: AccessorFn;
 };
@@ -19,12 +20,11 @@ const Line = styled.path`
 `;
 
 const MultiLine = ({
+  data,
   xAccessorScaled,
   yAccessorScaled,
   ...props
 }: LineProps) => {
-  const { data } = useChartContext();
-
   const lineGenerator = line()
     .x(xAccessorScaled)
     .y(yAccessorScaled)

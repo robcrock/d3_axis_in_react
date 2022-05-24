@@ -1,43 +1,33 @@
 import React from 'react';
 
-import useChartContext from '../../hooks/useChartContext';
+import './Chart.css';
 
 type AxisHorizontalProps = {
   label?: string;
+  innerWidth: number;
+  innerHeight: number;
   formatTick: (date: Date) => string;
   scale: d3.ScaleTime<number, number, never>;
 };
 
 const AxisHorizontal = ({
+  innerWidth,
+  innerHeight,
   label,
   formatTick,
   scale,
   ...props
 }: AxisHorizontalProps) => {
-  const { dimensions } = useChartContext();
-
-  const numberOfTicks = dimensions.innerWidth / 100;
-  console.log(numberOfTicks);
-  const ticks = scale.ticks(10);
-
-  // function transformTickText(d: Date) {
-  //   const currentMonth = d;
-  //   const nextMonth = new Date(
-  //     currentMonth.getFullYear(),
-  //     currentMonth.getMonth() + 1,
-  //     1,
-  //   );
-  //   const textNudge = (scale(nextMonth) - scale(currentMonth)) / 2;
-  //   return `translate(${textNudge}, -10)`;
-  // }
+  const numberOfTicks = innerWidth / 100;
+  const ticks = scale.ticks(numberOfTicks);
 
   return (
     <g
       className='Axis AxisHorizontal'
-      transform={`translate(0, ${dimensions.innerHeight})`}
+      transform={`translate(0, ${innerHeight})`}
       {...props}
     >
-      <line className='Axis__line' x2={dimensions.innerWidth} />
+      <line className='Axis__line' x2={innerWidth} />
 
       {ticks.map((tick, i) => (
         <g key={i} transform={`translate(${scale(tick)}, 25)`}>
@@ -48,19 +38,10 @@ const AxisHorizontal = ({
         </g>
       ))}
 
-      {/* {ticks?.map((tick, i) => (
-        <g key={i} transform={`translate(${scale(tick)}, 25)`}>
-          <line stroke='#ccc' y2='6' transform={`translate(0, -25)`} />
-          <text className='Axis__tick' transform={transformTickText(tick)}>
-            {formatTick(tick)}
-          </text>
-        </g>
-      ))} */}
-
       {label && (
         <text
           className='Axis__label'
-          transform={`translate(${dimensions.innerWidth / 2}, 60)`}
+          transform={`translate(${innerWidth / 2}, 60)`}
         >
           {label}
         </text>

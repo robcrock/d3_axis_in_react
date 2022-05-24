@@ -1,43 +1,53 @@
+import { autoType, tsv } from 'd3';
+import { groupBy } from 'lodash';
 import { useEffect, useState } from 'react';
-import { json, csv, tsv } from 'd3';
-
 import { DataRecord } from '../typings/types';
 
-type useDataProps = {
-  url: string;
-  fileType: 'csv' | 'tsv' | 'json';
-};
+const useData = () => {
+  const [data, setData] = useState<DataRecord[] | null>([]);
+  const [processedData, setProcessedData] = useState<DataRecord[] | null>([]);
 
-const fileParser = async (url: string, fileType: 'csv' | 'tsv' | 'json') => {
-  let data = [];
-  try {
-    switch (fileType) {
-      case 'csv':
-        return (data = await csv(url));
-      case 'tsv':
-        return (data = await tsv(url));
-      case 'json':
-        return (data = await json(url));
-    }
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-const useData = (url, fileType) => {
-  const [data, setData] = useState<unknown | null>([]);
-
+  // Fetch the initial dataset
   useEffect(() => {
-    // Declare data fecthing function
-    // Learned to type this function here https://blog.logrocket.com/async-await-in-typescript/
-    const data = fileParser(url, fileType);
-    console.log(data);
-    data && setData(data);
-    console.log('Inside effect');
+    const fetchData = async () => {
+      try {
+        const data: DataRecord[] | undefined = await tsv(
+          '/data/positivity_by_test_ordered_time.tsv',
+          autoType,
+        );
+
+        data && setData(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
   }, []);
 
-  console.log('Data ', data);
-  return data;
+  // Process the dataset after it has been fetched
+  useEffect(() => {
+    if (!data) return;
+
+    // Filter first to reduce the number of records you need to process
+    const filteredData = data?.filter(
+      d => d.test_ordered === 'COVID only test' || 'COVID+Flu test',
+    );
+
+    // Sort for presentation, as D3 doesn't sort our data for us.
+    const sortedData = filteredData.sort(
+      (a, b) => a.collection_date - b.collection_date,
+    );
+
+    const dataToGroup = groupBy(sortedData, 'test_ordered');
+    const groupedData = Object.keys(dataToGroup).map(function (key) {
+      return dataToGroup[key];
+    });
+
+    setProcessedData(groupedData);
+  }, [data]);
+
+  return [data, processedData];
 };
 
 export default useData;

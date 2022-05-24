@@ -20,13 +20,6 @@ type ChartProps = {
 };
 
 const ChartProvider = ({ data, dimensions, children }: ChartProps) => {
-  const chartValue = useMemo(() => {
-    return {
-      data,
-      dimensions,
-    };
-  }, [data, dimensions]);
-
   return (
     <ChartContext.Provider value={chartValue}>
       <svg

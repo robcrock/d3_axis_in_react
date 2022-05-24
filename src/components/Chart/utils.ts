@@ -80,3 +80,12 @@ export const useUniqueId = (prefix = '') => {
   lastId++;
   return [prefix, lastId].join('-');
 };
+
+export function padExtent([min, max], paddingFactor) {
+  const delta = Math.abs(max - min);
+  const padding = delta * paddingFactor;
+
+  return [min - padding, max + padding];
+  // option to treat [0, 1] as a special case
+  // return [min === 0 ? 0 : min - padding, max === 1 ? 1 : max + padding]
+}

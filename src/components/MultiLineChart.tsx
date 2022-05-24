@@ -1,93 +1,83 @@
 import React from 'react';
-import { scaleTime, extent, scaleLinear, timeFormat, format } from 'd3';
+import { extent, scaleLinear, timeFormat, format } from 'd3';
 
 import { DataRecord, AccessorFn } from '../typings/types';
-import useResizeObserver from '../hooks/useResizeObserver';
 
-import './Chart/Chart.css';
-
-import ChartProvider from './Chart/ChartProvider';
 import MultiLine from './Chart/MultiLine';
 import AxisHorizontal from './Chart/AxisHorizontal';
 import AxisVertical from './Chart/AxisVertical';
-import { groupBy } from 'lodash';
+import useData from '../hooks/useData';
+
+import styled from 'styled-components';
+import useResizeObserver from '../hooks/useResizeObserverNew';
+
+const ChartWrapper = styled.div`
+  height: 100%;
+  width: 100%;
+`;
 
 type LineChartProps<Data extends DataRecord> = {
-  data: Data[];
-  xAccessor: AccessorFn;
-  yAccessor: AccessorFn;
-  label: string;
+  width: number;
+  height: number;
 };
 
 const LineChart = <Data extends DataRecord>({
-  data,
-  xAccessor,
-  yAccessor,
-  label,
+  width = 650,
+  height = 400,
 }: LineChartProps<Data>) => {
-  const [wrapperRef, dimensions] = useResizeObserver({
-    marginTop: 20,
-    marginRight: 200,
-    marginBottom: 120,
-    marginLeft: 80,
-    height: 0,
-    width: 0,
-    innerHeight: 0,
-    innerWidth: 0,
-  });
+  const [data, processedData] = useData();
+  if (!processedData || !data) return <div style={{ width, height }} />;
 
-  //********** BEGIN DATA PROCESSING **********
-  // Filter the data prior to creating your scales
-  const filteredData = data.filter(
-    d => d.test_ordered === 'COVID only test' || 'COVID+Flu test',
-  );
+  // Margin Convention
+  const margin = { top: 20, right: 200, bottom: 40, left: 80 };
+  const innerWidth = width - margin.left - margin.right;
+  const innerHeight = height - margin.top - margin.bottom;
 
-  // Set up your x scales and accessors
-  const [xMin = 0, xMax = 0] = extent(data, xAccessor);
-  const xScale = scaleTime()
-    .domain([xMin, xMax])
-    .range([0, dimensions.innerWidth]);
+  // Create accessor functions
+  const xAccessor: AccessorFn = d => new Date(d.collection_date);
+  const yAccessor: AccessorFn = d => d.covid_positivity;
 
+  const xExtent = extent(data, xAccessor);
+  const yExtent = extent(data, yAccessor);
+  // const colorExtent = extent(data, colorAccessor)
+
+  // Create scales
+  const xScale = scaleLinear().domain(xExtent).range([0, innerWidth]);
+  const yScale = scaleLinear().domain(yExtent).range([innerHeight, 0]);
+  // const colorScale = scaleSequential(interpolateCividis).domain(colorExtent)
+
+  // Scale the accessor fuctions
   const xAccessorScaled: AccessorFn = d => xScale(xAccessor(d));
-
-  // Set up your y scales and accessors
-  const [yMin = 0, yMax = 0] = extent(data, yAccessor);
-  const yScale = scaleLinear()
-    .domain([yMin, yMax])
-    .range([dimensions.innerHeight, 0])
-    .nice();
-
   const yAccessorScaled: AccessorFn = d => yScale(yAccessor(d));
 
-  const sortedData = filteredData.sort(
-    (a, b) => a.collection_date - b.collection_date,
-  );
-
-  //********** FINISH DATA PROCESSING **********
-  const dataToGroup = groupBy(sortedData, 'test_ordered');
-  const groupedData = Object.keys(dataToGroup).map(function (key) {
-    return dataToGroup[key];
-  });
-
-  console.log(groupedData);
-
-  // Create formatting functions for the axes
-  const formatDate = timeFormat('%-m/%d');
-  const formatNumber = format('.0%');
+  const xTickFormatter = timeFormat('%-m/%d');
+  const yTickFormatter = format('.0%');
 
   return (
-    <div className='Timeline' ref={wrapperRef}>
-      <h2>COVID Positivity Rate by Tests Ordered</h2>
-      <ChartProvider data={groupedData} dimensions={dimensions}>
-        <AxisHorizontal scale={xScale} formatTick={formatDate} />
-        <AxisVertical scale={yScale} label={label} formatTick={formatNumber} />
-        <MultiLine
-          xAccessorScaled={xAccessorScaled}
-          yAccessorScaled={yAccessorScaled}
-        />
-        ;
-      </ChartProvider>
-    </div>
+    <ChartWrapper>
+      <svg width={width} height={height}>
+        <g transform={`translate(${margin.left} ${margin.top})`}>
+          <AxisHorizontal
+            innerWidth={innerWidth}
+            innerHeight={innerHeight}
+            scale={xScale}
+            formatTick={xTickFormatter}
+          />
+          <AxisVertical
+            innerWidth={innerWidth}
+            innerHeight={innerHeight}
+            scale={yScale}
+            label={'Positivity Rate'}
+            formatTick={yTickFormatter}
+          />
+          <MultiLine
+            data={processedData}
+            xAccessorScaled={xAccessorScaled}
+            yAccessorScaled={yAccessorScaled}
+          />
+        </g>
+      </svg>
+    </ChartWrapper>
   );
 };
 

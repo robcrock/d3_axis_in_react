@@ -1,41 +1,35 @@
 import React from 'react';
 
-import useChartContext from '../../hooks/useChartContext';
+import './Chart.css';
 
 type AxisVerticalProps = {
+  innerWidth: number;
+  innerHeight: number;
   label?: string;
   formatTick: (date: number) => string;
   scale: d3.ScaleLinear<number, number, never>;
 };
 
 const AxisVertical = ({
+  innerWidth,
+  innerHeight,
   label,
   formatTick,
   scale,
   ...props
 }: AxisVerticalProps) => {
-  const { dimensions } = useChartContext();
-
-  const numberOfTicks = dimensions.innerHeight / 70;
-
+  const numberOfTicks = innerHeight / 70;
   const ticks = scale.ticks(numberOfTicks);
 
   return (
     <g className='Axis AxisVertical' {...props}>
-      <line className='Axis__line' y2={dimensions.innerHeight} />
-
-      {/* {ticks.map((tick, i) => {
-        console.log('x1 ', dimensions.marginLeft);
-        console.log('x2 ', dimensions.innerWidth);
-        console.log('yScale tick ', scale(tick));
-
-      })} */}
+      <line className='Axis__line' y2={innerHeight} />
       {ticks.map((tick, i) => (
         <g key={i}>
           <line
             x1={0}
             y1={scale(tick)}
-            x2={dimensions.innerWidth}
+            x2={innerWidth}
             y2={scale(tick)}
             stroke='#EBEBEB'
           ></line>
@@ -53,9 +47,7 @@ const AxisVertical = ({
         <text
           className='Axis__label'
           style={{
-            transform: `translate(-56px, ${
-              dimensions.innerHeight / 2
-            }px) rotate(-90deg)`,
+            transform: `translate(-56px, ${innerHeight / 2}px) rotate(-90deg)`,
           }}
         >
           {label}

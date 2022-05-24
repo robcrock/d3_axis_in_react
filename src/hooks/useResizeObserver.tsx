@@ -1,4 +1,5 @@
-import { MutableRefObject, useEffect, useRef, useState } from 'react';
+import ResizeObserver from 'resize-observer-polyfill';
+import { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { Dimensions } from '../typings/types';
 
 type MarginKeys = 'marginTop' | 'marginRight' | 'marginLeft' | 'marginBottom';
@@ -12,10 +13,10 @@ const applyMarginConvention = (
 ): Dimensions => {
   let dimensionsWithMargin = {
     // Set up your margin convention here.
-    marginTop: 40,
-    marginRight: 30,
-    marginBottom: 40,
-    marginLeft: 75,
+    marginTop: 0,
+    marginRight: 0,
+    marginBottom: 0,
+    marginLeft: 0,
     ...dimensions,
   };
 
@@ -37,46 +38,78 @@ const applyMarginConvention = (
 };
 
 const useResizeObserver = (marginConvention: Dimensions) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const dimensions = applyMarginConvention(marginConvention);
+  const [observerEntry, setObserverEntry] = useState({});
+  const [node, setNode] = useState(null);
+  // const observer = useRef<SVGSVGElement | null>(null);
+  const observer = useRef(null);
 
-  const [height, setHeight] = useState(0);
-  const [width, setWidth] = useState(0);
+  console.log('node ', node);
 
-  useEffect(() => {
-    if (dimensions.width && dimensions.height) return;
-    // return [ref, dimensions];
-    if (!ref.current) return;
+  const disconnect = useCallback(() => observer.current?.disconnect(), []);
 
-    const observeTarget = ref.current;
-    const resizeObserver = new ResizeObserver(entries => {
-      if (!Array.isArray(entries)) return;
-      if (!entries.length) return;
+  const observe = useCallback(() => {
+    observer.current = new ResizeObserver(([entry]) => setObserverEntry(entry));
+    console.log('observer current ', observer.current);
+    if (node) observer.current.observe(node);
+  }, [node]);
 
-      const entry = entries[0];
+  useLayoutEffect(() => {
+    observe();
+    return () => disconnect();
+  }, [disconnect, observe]);
 
-      if (height !== entry.contentRect.height) {
-        setHeight(entry.contentRect.height);
-      }
-      if (width !== entry.contentRect.width) {
-        setWidth(entry.contentRect.width);
-      }
-    });
+  console.log('observerEntry ', observerEntry);
 
-    resizeObserver.observe(observeTarget);
+  return [setNode, observerEntry];
 
-    return () => {
-      resizeObserver.unobserve(observeTarget);
-    };
-  }, [marginConvention, height, width, dimensions]);
+  // const disconnect = useCallback(() => observer.current?.disconnect(), []);
 
-  const newDimensions = applyMarginConvention({
-    ...dimensions,
-    width: dimensions.width || width,
-    height: dimensions.height || height,
-  });
+  // const dimensions = applyMarginConvention(marginConvention);
 
-  return [ref, newDimensions] as const;
+  // const [height, setHeight] = useState(0);
+  // const [width, setWidth] = useState(0);
+
+  // useLayoutEffect(() => {
+  //   if (dimensions.width && dimensions.height) return;
+  //   // return [ref, dimensions];
+  //   if (!ref.current) return;
+
+  //   console.log('ref height ', ref.current.clientHeight);
+  //   console.log('ref width ', ref.current.clientWidth);
+
+  //   console.log('ref.current ', ref.current);
+
+  //   const observeTarget = ref.current;
+  //   const resizeObserver = new ResizeObserver(entries => {
+  //     if (!Array.isArray(entries)) return;
+  //     if (!entries.length) return;
+
+  //     const entry = entries[0];
+
+  //     console.log('entry rect ', entry.contentRect);
+
+  //     if (height !== entry.contentRect.height) {
+  //       setHeight(entry.contentRect.height);
+  //     }
+  //     if (width !== entry.contentRect.width) {
+  //       setWidth(entry.contentRect.width);
+  //     }
+  //   });
+
+  //   resizeObserver.observe(observeTarget);
+
+  //   return () => {
+  //     resizeObserver.unobserve(observeTarget);
+  //   };
+  // }, [marginConvention, height, width, dimensions]);
+
+  // const newDimensions = applyMarginConvention({
+  //   ...dimensions,
+  //   width: dimensions.width || width,
+  //   height: dimensions.height || height,
+  // });
+
+  // return [ref, newDimensions] as const;
 };
 
 export default useResizeObserver;
