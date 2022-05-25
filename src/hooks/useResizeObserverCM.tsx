@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from 'react';
+import { useLayoutEffect, useEffect, useState } from 'react';
 
 const useResizeObserver = (ref: { current: any }) => {
   const [{ width, height }, setWidthHeight] = useState({
@@ -6,7 +6,7 @@ const useResizeObserver = (ref: { current: any }) => {
     height: 0,
   });
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const divNode = ref.current;
     if (divNode == null) return;
 
@@ -30,6 +30,16 @@ const useResizeObserver = (ref: { current: any }) => {
     return () => {
       observer.unobserve(divNode);
     };
+  }, []);
+
+  useLayoutEffect(() => {
+    // handleResize()
+    if (!ref.current) return;
+    const { offsetWidth = 0, offsetHeight = 0 } = ref.current;
+    setWidthHeight({
+      width: offsetWidth,
+      height: offsetHeight,
+    });
   }, []);
 
   return { width, height };

@@ -1,55 +1,42 @@
 import React from 'react';
 
 import useData from './hooks/useData';
-import useResizeObserver from './hooks/useResizeObserverNew';
+import useResizeObserver from './hooks/useResizeObserverCM';
 
 import MultiLineChart from './components/MultiLineChart';
 
 // !IMPORTANT: Styles must be loaded last
 import styled from 'styled-components';
 import './styles.css';
+import ChartContainer from './components/ChartContainer';
 
 const App = () => {
-  const ref = React.useRef(null);
-  const { width, height } = useResizeObserver(ref);
-
   const [data, processedData] = useData();
 
+  const titleText = 'COVID Test Positivity Resutls';
+  const descText =
+    'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Reiciendis quasi fugit voluptatem soluta, sapiente quae corporis earum quas officia aspernatur, deserunt repellat blanditiis corrupti, dolorem dolor dignissimos! In, iusto deleniti.';
+  const dataSource = 'Helix';
+
   return (
-    <>
-      <ChartWrapper ref={ref}>
-        <DashboardTitle>COVID Test Povitivity Results</DashboardTitle>
-        <p>
-          Lorem, ipsum dolor sit amet consectetur adipisicing elit. Reiciendis
-          quasi fugit voluptatem soluta, sapiente quae corporis earum quas
-          officia aspernatur, deserunt repellat blanditiis corrupti, dolorem
-          dolor dignissimos! In, iusto deleniti.
-        </p>
-        <MultiLineChart
-          data={data}
-          processedData={processedData}
-          width={width}
-          height={height * 0.75}
-        />
-        <footer>Dummy Footer</footer>
-      </ChartWrapper>
-    </>
+    <DashboardContainer>
+      <ChartContainer
+        chartHeight={400}
+        title={titleText}
+        description={descText}
+        chartType={'multi-line'}
+        data={{ data, processedData }}
+        source={dataSource}
+      ></ChartContainer>
+    </DashboardContainer>
   );
 };
 
-const DashboardTitle = styled.div`
-  font-weight: 900;
-  margin: 0.4em 0 0.6em;
-`;
-
-const ChartWrapper = styled.div`
-  border: 1px solid black;
+const DashboardContainer = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 100%;
-  background: white;
-  margin: 1rem;
-  padding: 1rem;
+  background: #e9e9e9;
 `;
 
 export default App;

@@ -1,14 +1,13 @@
-import React from 'react';
+import React, { forwardRef, useRef } from 'react';
 import { extent, scaleLinear, timeFormat, format } from 'd3';
-
 import { DataRecord, AccessorFn } from '../typings/types';
 
 import MultiLine from './Chart/MultiLine';
 import AxisHorizontal from './Chart/AxisHorizontal';
 import AxisVertical from './Chart/AxisVertical';
 
-import { Chart } from '../styles';
 import styled from 'styled-components';
+import ChartResizeObserver from './ChartResizeObserver';
 
 type LineChartProps<Data extends DataRecord> = {
   data: DataRecord[] | null;
@@ -17,17 +16,36 @@ type LineChartProps<Data extends DataRecord> = {
   height: number;
 };
 
-const LineChart = <Data extends DataRecord>({
+// const ContainerResizeObserver = Component => props => {
+//   const ref = useRef(null);
+//   const sizes = useResizeObserver(ref);
+//   return (
+//     <div
+//       ref={ref}
+//       style={{
+//         height: sizes.height || props.height,
+//         width: sizes.width || props.width,
+//       }}
+//     >
+//       <Component {...props} />
+//     </div>
+//   );
+// };
+
+const MultiLineChart = <Data extends DataRecord>({
   data,
   processedData,
-  width = 650,
-  height = 400,
+  width,
+  height,
 }: LineChartProps<Data>) => {
+  // const ref = React.useRef(null);
+  // const dimensions = useResizeObserver(ref);
+
   if (!processedData || !data) return <div style={{ width, height }} />;
-  console.log(data);
+  // console.log(data);
 
   // Margin Convention
-  const margin = { top: 0, right: 200, bottom: 0, left: 80 };
+  const margin = { top: 20, right: 200, bottom: 60, left: 80 };
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
 
@@ -51,36 +69,39 @@ const LineChart = <Data extends DataRecord>({
   const xTickFormatter = timeFormat('%-m/%d');
   const yTickFormatter = format('.0%');
 
+  console.table('dimensions spread ', {
+    margin,
+    height,
+    innerHeight,
+    width,
+    innerWidth,
+  });
   return (
-    <ChartWrapper>
-      <Chart width={width} height={height}>
-        <g transform={`translate(${margin.left} ${margin.top})`}>
-          <AxisHorizontal
-            innerWidth={innerWidth}
-            innerHeight={innerHeight}
-            scale={xScale}
-            formatTick={xTickFormatter}
-          />
-          <AxisVertical
-            innerWidth={innerWidth}
-            innerHeight={innerHeight}
-            scale={yScale}
-            label={'Positivity Rate'}
-            formatTick={yTickFormatter}
-          />
-          <MultiLine
-            data={processedData}
-            xAccessorScaled={xAccessorScaled}
-            yAccessorScaled={yAccessorScaled}
-          />
-        </g>
-      </Chart>
-    </ChartWrapper>
+    <ChartResizeObserver
+      dimensions={{ margin, height, innerHeight, width, innerWidth }}
+    >
+      <g transform={`translate(${margin.left} ${margin.top})`}>
+        <AxisHorizontal
+          innerWidth={innerWidth}
+          innerHeight={innerHeight}
+          scale={xScale}
+          formatTick={xTickFormatter}
+        />
+        <AxisVertical
+          innerWidth={innerWidth}
+          innerHeight={innerHeight}
+          scale={yScale}
+          label={'Positivity Rate'}
+          formatTick={yTickFormatter}
+        />
+        <MultiLine
+          data={processedData}
+          xAccessorScaled={xAccessorScaled}
+          yAccessorScaled={yAccessorScaled}
+        />
+      </g>
+    </ChartResizeObserver>
   );
 };
 
-const ChartWrapper = styled.div`
-  margin: 1rem;
-`;
-
-export default LineChart;
+export default MultiLineChart;
