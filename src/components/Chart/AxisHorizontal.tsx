@@ -1,6 +1,7 @@
 import React from 'react';
+import styled from 'styled-components';
 
-import './Chart.css';
+import { AxisLabel, AxisLine, AxisTick } from '../../styles';
 
 type AxisHorizontalProps = {
   label?: string;
@@ -22,32 +23,34 @@ const AxisHorizontal = ({
   const ticks = scale.ticks(numberOfTicks);
 
   return (
-    <g
-      className='Axis AxisHorizontal'
+    <AxisHorizontalWrapper
       transform={`translate(0, ${innerHeight})`}
       {...props}
     >
-      <line className='Axis__line' x2={innerWidth} />
+      <AxisLine x2={innerWidth} />
 
       {ticks.map((tick, i) => (
         <g key={i} transform={`translate(${scale(tick)}, 25)`}>
           <line stroke='#ccc' y2='6' transform={`translate(0, -25)`} />
-          <text key={i} className='Axis__tick'>
-            {formatTick(tick)}
-          </text>
+          <AxisTick key={i}>{formatTick(tick)}</AxisTick>
         </g>
       ))}
 
       {label && (
-        <text
-          className='Axis__label'
-          transform={`translate(${innerWidth / 2}, 60)`}
-        >
+        <AxisLabel transform={`translate(${innerWidth / 2}, 60)`}>
           {label}
-        </text>
+        </AxisLabel>
       )}
-    </g>
+    </AxisHorizontalWrapper>
   );
 };
+
+const AxisHorizontalWrapper = styled.g`
+  text-anchor: middle;
+`;
+
+const TickText = styled.text`
+  text-anchor: middle;
+`;
 
 export default AxisHorizontal;

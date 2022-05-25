@@ -4,20 +4,11 @@ import styled from 'styled-components';
 
 import { AccessorFn, DataRecord } from '../../typings/types';
 
-import useChartContext from '../../hooks/useChartContext';
-
 type LineProps = {
   data: DataRecord[];
   xAccessorScaled: AccessorFn;
   yAccessorScaled: AccessorFn;
 };
-
-const Line = styled.path`
-  fill: none;
-  stroke-width: 2;
-  stroke-linejoin: round;
-  stroke-linecap: round;
-`;
 
 const MultiLine = ({
   data,
@@ -44,5 +35,12 @@ const MultiLine = ({
     </>
   );
 };
+
+const Line = styled.path`
+  fill: none;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+`;
 
 export default MultiLine;

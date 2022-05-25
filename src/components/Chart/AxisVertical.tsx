@@ -1,6 +1,7 @@
 import React from 'react';
 
-import './Chart.css';
+import styled from 'styled-components';
+import { AxisLabel, AxisLine, AxisTick } from '../../styles';
 
 type AxisVerticalProps = {
   innerWidth: number;
@@ -22,8 +23,8 @@ const AxisVertical = ({
   const ticks = scale.ticks(numberOfTicks);
 
   return (
-    <g className='Axis AxisVertical' {...props}>
-      <line className='Axis__line' y2={innerHeight} />
+    <AxisVerticalWrapper {...props}>
+      <AxisLine y2={innerHeight} />
       {ticks.map((tick, i) => (
         <g key={i}>
           <line
@@ -33,28 +34,34 @@ const AxisVertical = ({
             y2={scale(tick)}
             stroke='#EBEBEB'
           ></line>
-          <text
-            key={i}
-            className='Axis__tick'
-            transform={`translate(-16, ${scale(tick)})`}
-          >
+          <AxisTick key={i} transform={`translate(-16, ${scale(tick)})`}>
             {formatTick(tick)}
-          </text>
+          </AxisTick>
         </g>
       ))}
 
       {label && (
-        <text
-          className='Axis__label'
+        <AxisLabel
           style={{
-            transform: `translate(-56px, ${innerHeight / 2}px) rotate(-90deg)`,
+            transform: `translate(-60px, ${innerHeight / 2}px) rotate(-90deg)`,
           }}
         >
           {label}
-        </text>
+        </AxisLabel>
       )}
-    </g>
+    </AxisVerticalWrapper>
   );
 };
+
+const AxisVerticalWrapper = styled.g`
+  dominant-baseline: middle;
+  text-anchor: end;
+`;
+
+const TickText = styled.text`
+  dominant-baseline: middle;
+  text-anchor: end;
+  font-size: 0.9em;
+`;
 
 export default AxisVertical;

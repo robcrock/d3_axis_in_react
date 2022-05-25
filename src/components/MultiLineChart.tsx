@@ -6,19 +6,13 @@ import { DataRecord, AccessorFn } from '../typings/types';
 import MultiLine from './Chart/MultiLine';
 import AxisHorizontal from './Chart/AxisHorizontal';
 import AxisVertical from './Chart/AxisVertical';
-import useData from '../hooks/useData';
 
+import { Chart } from '../styles';
 import styled from 'styled-components';
-import useResizeObserver from '../hooks/useResizeObserverNew';
-
-const ChartWrapper = styled.div`
-  height: 100%;
-  width: 100%;
-`;
 
 type LineChartProps<Data extends DataRecord> = {
-  data: DataRecord[];
-  processedData: DataRecord[];
+  data: DataRecord[] | null;
+  processedData: DataRecord[] | null;
   width: number;
   height: number;
 };
@@ -29,9 +23,11 @@ const LineChart = <Data extends DataRecord>({
   width = 650,
   height = 400,
 }: LineChartProps<Data>) => {
+  if (!processedData || !data) return <div style={{ width, height }} />;
   console.log(data);
+
   // Margin Convention
-  const margin = { top: 20, right: 200, bottom: 40, left: 80 };
+  const margin = { top: 0, right: 200, bottom: 0, left: 80 };
   const innerWidth = width - margin.left - margin.right;
   const innerHeight = height - margin.top - margin.bottom;
 
@@ -57,7 +53,7 @@ const LineChart = <Data extends DataRecord>({
 
   return (
     <ChartWrapper>
-      <svg width={width} height={height}>
+      <Chart width={width} height={height}>
         <g transform={`translate(${margin.left} ${margin.top})`}>
           <AxisHorizontal
             innerWidth={innerWidth}
@@ -78,9 +74,13 @@ const LineChart = <Data extends DataRecord>({
             yAccessorScaled={yAccessorScaled}
           />
         </g>
-      </svg>
+      </Chart>
     </ChartWrapper>
   );
 };
+
+const ChartWrapper = styled.div`
+  margin: 1rem;
+`;
 
 export default LineChart;
