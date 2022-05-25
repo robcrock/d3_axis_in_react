@@ -12,18 +12,17 @@ const App = () => {
 
   const titleText = 'COVID Test Positivity Results';
   const descText =
-    'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Reiciendis quasi fugit voluptatem soluta, sapiente quae corporis earum quas officia aspernatur, deserunt repellat blanditiis corrupti, dolorem dolor dignissimos! In, iusto deleniti. ';
+    'Covid+Flu tests are typically ordered for patients who present with symptoms. This is not the case with Covid-only test orders. The Covid+Flu positivity rate is therefore a proxy for symptomatic positivity.';
   const dataSource = { name: 'Helix', link: 'helix.com' };
 
   return (
     <div>
       <ChartContainer
-        chartHeight={600}
         title={titleText}
         description={descText}
-        chartType={'multi-line'}
-        data={{ data, processedData }}
         source={dataSource}
+        chartHeight={400}
+        data={{ data, processedData }}
       ></ChartContainer>
       <GlobalStyles />
     </div>

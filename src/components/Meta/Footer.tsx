@@ -8,25 +8,31 @@ type FooterProps = {
 
 export default function Footer({ by, source }: FooterProps) {
   return (
-    <figcaption>
-      <Source>
-        <SourceLink href={source}>{by}</SourceLink>
-      </Source>
-    </figcaption>
+    <Wrapper>
+      <figcaption>
+        <cite>
+          <SourceLink href={source}>Source: {by}</SourceLink>
+        </cite>
+      </figcaption>
+      <Logo src='../../../public/assets/helix_logo.png' alt='Helix Logo' />
+    </Wrapper>
   );
 }
 
-const Source = styled.cite`
-  display: block;
-  text-align: right;
-  margin-top: 8px;
+const Wrapper = styled.footer`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
 `;
 
 const SourceLink = styled.a`
   text-decoration: none;
   color: hsl(0deg 0% 35%);
+`;
 
-  &::before {
-    content: '—';
-  }
+const Logo = styled.img`
+  height: 22px;
+  object-fit: fill;
 `;
