@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import useResizeObserver from '../hooks/useResizeObserver';
 import { DataRecord } from '../typings/types';
+import Footer from './Meta/Footer';
 import MultiLineChart from './MultiLineChart';
 
 type ChartContainerProps = {
@@ -10,7 +11,7 @@ type ChartContainerProps = {
   description: string;
   chartType?: string;
   data: { data: DataRecord[]; processedData: DataRecord[] };
-  source: string;
+  source: { name: string; link: string };
 };
 
 const ChartContainer = ({
@@ -38,12 +39,12 @@ const ChartContainer = ({
         width={chartWrapperDimensions.width}
         height={chartHeight}
       />
-      <footer>{source}</footer>
+      <Footer by={source.name} source={source.link} />
     </Wrapper>
   );
 };
 
-const Wrapper = styled.div`
+const Wrapper = styled.figure`
   min-height: 100%;
   background: #ffffff;
   margin: 1rem;

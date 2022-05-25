@@ -1,7 +1,7 @@
 import React from 'react';
 
 import styled from 'styled-components';
-import { AxisLabel, AxisLine, AxisTick } from '../../styles';
+import { AxisLabel, AxisLine, AxisTick } from '../../styles/styles';
 
 type AxisVerticalProps = {
   innerWidth: number;

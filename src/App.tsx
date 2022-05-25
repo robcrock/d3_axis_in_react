@@ -1,42 +1,33 @@
 import React from 'react';
 
 import useData from './hooks/useData';
-import useResizeObserver from './hooks/useResizeObserver';
-
-import MultiLineChart from './components/MultiLineChart';
 
 // !IMPORTANT: Styles must be loaded last
 import styled from 'styled-components';
-import './styles.css';
+import GlobalStyles from './styles/GlobalStyles';
 import ChartContainer from './components/ChartContainer';
 
 const App = () => {
   const [data, processedData] = useData();
 
-  const titleText = 'COVID Test Positivity Resutls';
+  const titleText = 'COVID Test Positivity Results';
   const descText =
-    'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Reiciendis quasi fugit voluptatem soluta, sapiente quae corporis earum quas officia aspernatur, deserunt repellat blanditiis corrupti, dolorem dolor dignissimos! In, iusto deleniti.';
-  const dataSource = 'Helix';
+    'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Reiciendis quasi fugit voluptatem soluta, sapiente quae corporis earum quas officia aspernatur, deserunt repellat blanditiis corrupti, dolorem dolor dignissimos! In, iusto deleniti. ';
+  const dataSource = { name: 'Helix', link: 'helix.com' };
 
   return (
-    <DashboardContainer>
+    <div>
       <ChartContainer
-        chartHeight={400}
+        chartHeight={600}
         title={titleText}
         description={descText}
         chartType={'multi-line'}
         data={{ data, processedData }}
         source={dataSource}
       ></ChartContainer>
-    </DashboardContainer>
+      <GlobalStyles />
+    </div>
   );
 };
-
-const DashboardContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  min-height: 100%;
-  background: #f7f7f7;
-`;
 
 export default App;
