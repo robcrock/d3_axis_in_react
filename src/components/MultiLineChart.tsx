@@ -17,17 +17,19 @@ const ChartWrapper = styled.div`
 `;
 
 type LineChartProps<Data extends DataRecord> = {
+  data: DataRecord[];
+  processedData: DataRecord[];
   width: number;
   height: number;
 };
 
 const LineChart = <Data extends DataRecord>({
+  data,
+  processedData,
   width = 650,
   height = 400,
 }: LineChartProps<Data>) => {
-  const [data, processedData] = useData();
-  if (!processedData || !data) return <div style={{ width, height }} />;
-
+  console.log(data);
   // Margin Convention
   const margin = { top: 20, right: 200, bottom: 40, left: 80 };
   const innerWidth = width - margin.left - margin.right;

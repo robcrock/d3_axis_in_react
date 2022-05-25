@@ -6,6 +6,7 @@ import useResizeObserver from './hooks/useResizeObserverNew';
 // !IMPORTANT: Styles must be loaded last
 import styled from 'styled-components';
 import './styles.css';
+import useData from './hooks/useData';
 
 const ChartWrapper = styled.div`
   min-height: 500px;
@@ -19,6 +20,8 @@ const App = () => {
   const ref = React.useRef(null);
   const { width, height } = useResizeObserver(ref);
 
+  const [data, processedData] = useData();
+
   return (
     <ChartWrapper className='App' ref={ref}>
       <h2>COVID Test Povitivity Results</h2>
@@ -28,7 +31,12 @@ const App = () => {
         aspernatur, deserunt repellat blanditiis corrupti, dolorem dolor
         dignissimos! In, iusto deleniti.
       </p>
-      <MultiLineChart width={width} height={height * 0.75} />
+      <MultiLineChart
+        data={data}
+        processedData={processedData}
+        width={width}
+        height={height * 0.65}
+      />
       <footer>Dummy Footer</footer>
     </ChartWrapper>
   );
