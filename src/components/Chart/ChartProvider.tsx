@@ -22,11 +22,7 @@ type ChartProps = {
 const ChartProvider = ({ data, dimensions, children }: ChartProps) => {
   return (
     <ChartContext.Provider value={chartValue}>
-      <svg
-        className='Chart'
-        width={dimensions.width}
-        height={dimensions.height}
-      >
+      <svg width={dimensions.width} height={dimensions.height}>
         <g
           transform={`translate(${dimensions.marginLeft}, ${dimensions.marginTop})`}
         >

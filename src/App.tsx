@@ -1,7 +1,7 @@
 import React from 'react';
 
 import useData from './hooks/useData';
-import useResizeObserver from './hooks/useResizeObserverCM';
+import useResizeObserver from './hooks/useResizeObserver';
 
 import MultiLineChart from './components/MultiLineChart';
 
@@ -36,7 +36,7 @@ const DashboardContainer = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 100%;
-  background: #e9e9e9;
+  background: #f7f7f7;
 `;
 
 export default App;
