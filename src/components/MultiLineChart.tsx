@@ -37,7 +37,7 @@ const MultiLineChart = <Data extends DataRecord>({
 
   // Create scales
   const xScale = scaleLinear().domain(xExtent).range([0, innerWidth]);
-  const yScale = scaleLinear().domain(yExtent).range([innerHeight, 0]);
+  const yScale = scaleLinear().domain([0, yExtent[1]]).range([innerHeight, 0]);
 
   // Scale the accessor fuctions
   const xAccessorScaled: AccessorFn = d => xScale(xAccessor(d));
