@@ -29,7 +29,9 @@ const MultiLineChart = <Data extends DataRecord>({
   width,
   height,
 }: LineChartProps<Data>) => {
-  if (!processedData || !data) return <div style={{ width, height }} />;
+  const { original, transformed, chart } = data;
+  if (!original || !transformed || !chart)
+    return <div style={{ width, height }} />;
 
   // Margin Convention
   const margin = { top: 60, right: 80, bottom: 100, left: 60 };
@@ -40,8 +42,8 @@ const MultiLineChart = <Data extends DataRecord>({
   const xAccessor: AccessorFn = d => new Date(d.date);
   const yAccessor: AccessorFn = d => d.value;
 
-  const xExtent = extent(data, xAccessor);
-  const yExtent = extent(data, yAccessor);
+  const xExtent = extent(transformed, xAccessor);
+  const yExtent = extent(transformed, yAccessor);
 
   console.log('data in chart ', data);
   console.log('xExtent ', xExtent);
@@ -78,7 +80,7 @@ const MultiLineChart = <Data extends DataRecord>({
           formatTick={yTickFormatter}
         />
         <MultiLine
-          data={processedData}
+          data={chart}
           xAccessorScaled={xAccessorScaled}
           yAccessorScaled={yAccessorScaled}
         />

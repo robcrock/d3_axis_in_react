@@ -1,54 +1,68 @@
 import { autoType, group, tsv } from 'd3';
-import { chunk, groupBy, union, partition } from 'lodash';
 import { useEffect, useState } from 'react';
 import { DataRecord } from '../typings/types';
 
 const useData = () => {
   const [data, setData] = useState<DataRecord[] | null>([]);
-  const [processedData, setProcessedData] = useState<DataRecord[] | null>([]);
+
+  // Transform data function
+  const createTransformData = dataSet => {
+    // Filter the dataset
+    const filteredData = Array.from(dataSet).filter(
+      d => d.test_ordered === 'COVID only test',
+    );
+
+    // Transform data
+    const covidP = filteredData.map(d => {
+      return {
+        date: d.collection_date,
+        dimension: 'covid_positivity',
+        value: d.covid_positivity,
+      };
+    });
+
+    const flueP = filteredData.map(d => {
+      return {
+        date: d.collection_date,
+        dimension: 'flu_positivity',
+        value: d.flua_positivity,
+      };
+    });
+
+    const transformedData = covidP.concat(flueP);
+
+    return transformedData;
+  };
+
+  // Chart data function
+  const createChartData = dataSet => {
+    const groupedData = Array.from(group(dataSet, d => d.dimension));
+
+    // Sort for presentation, as D3 doesn't sort our data for us.
+    groupedData.forEach(group => group[1].sort((a, b) => a.date - b.date));
+
+    return groupedData;
+  };
 
   // Fetch the initial dataset
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data: DataRecord[] | undefined = await tsv(
+        const data = await tsv(
           '/data/positivity_by_test_ordered_time.tsv',
           autoType,
         );
+        const transformedData = createTransformData(data);
+        const chartData = createChartData(transformedData);
+        console.log('chataData', chartData);
 
-        console.log(data);
-        console.log('Count before filter: ', data.length);
+        const dataState = {
+          original: data,
+          transformed: transformedData,
+          chart: chartData,
+        };
 
-        // Filter first to reduce the number of records you need to process
-        const filteredData = data?.filter(
-          d => d.test_ordered === 'COVID only test',
-        );
-
-        console.log('Count after filter: ', filteredData.length);
-
-        // Sort for presentation, as D3 doesn't sort our data for us.
-        const sortedData = filteredData.sort(
-          (a, b) => a.collection_date - b.collection_date,
-        );
-
-        // Transform data
-        const covidP = sortedData.map(d => {
-          return {
-            date: d.collection_date,
-            dimension: 'covid_positivity',
-            value: d.covid_positivity,
-          };
-        });
-
-        const flueP = sortedData.map(d => {
-          return {
-            date: d.collection_date,
-            dimension: 'flu_positivity',
-            value: d.flua_positivity,
-          };
-        });
-
-        data && setData(covidP.concat(flueP));
+        setData(dataState);
       } catch (error) {
         console.error(error);
       }
@@ -57,19 +71,7 @@ const useData = () => {
     fetchData();
   }, []);
 
-  // Process the dataset after it has been fetched
-  useEffect(() => {
-    if (!data) return;
-
-    const groupedData = Array.from(group(data, d => d.dimension));
-
-    // Sort for presentation, as D3 doesn't sort our data for us.
-    groupedData.forEach(group => group[1].sort((a, b) => a.date - b.date));
-
-    setProcessedData(groupedData);
-  }, [data]);
-
-  return [data, processedData];
+  return [data];
 };
 
 export default useData;

@@ -41,10 +41,12 @@ const AxisHorizontal = ({
       ))}
 
       {minorTicks.map((tick, i) => (
-        <g key={i} transform={`translate(${scale(tick)}, 25)`}>
-          <line stroke='#ccc' y2='3' transform={`translate(0, -25)`} />
-          {/* <AxisTick key={i}>{formatTick(tick)}</AxisTick> */}
-        </g>
+        <line
+          key={i}
+          stroke='#ccc'
+          y2='3'
+          transform={`translate(${scale(tick)}, 0)`}
+        />
       ))}
 
       {label && (

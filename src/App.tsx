@@ -8,12 +8,12 @@ import GlobalStyles from './styles/GlobalStyles';
 import ChartContainer from './components/ChartContainer';
 
 const App = () => {
-  const [data, processedData] = useData();
+  const [data] = useData();
 
   const titleText =
     'Flu A positivity is much lower than Covid positivity, but both are currently increasing';
   const descText = '';
-  const dataSource = { name: 'Helix', link: 'helix.com' };
+  const dataSource = { name: 'Helix', link: 'https://www.helix.com/' };
 
   return (
     <div>
@@ -22,7 +22,7 @@ const App = () => {
         description={descText}
         source={dataSource}
         chartHeight={500}
-        data={{ data, processedData }}
+        data={data}
       ></ChartContainer>
       <GlobalStyles />
     </div>

@@ -25,8 +25,6 @@ const ChartContainer = ({
   const chartWrapperRef = React.useRef(null);
   const chartWrapperDimensions = useResizeObserver(chartWrapperRef);
 
-  const { data: fullData, processedData } = data;
-
   return (
     <Wrapper ref={chartWrapperRef}>
       <Header>
@@ -34,8 +32,7 @@ const ChartContainer = ({
         <p>{description}</p>
       </Header>
       <MultiLineChart
-        data={fullData}
-        processedData={processedData}
+        data={data}
         width={chartWrapperDimensions.width}
         height={chartHeight}
       />
