@@ -2,7 +2,7 @@ import { autoType, group, tsv } from 'd3';
 import { useEffect, useState } from 'react';
 import { DataRecord } from '../typings/types';
 
-const useData = () => {
+const useData = filePath => {
   const [data, setData] = useState<DataRecord[] | null>([]);
 
   // Transform data function
@@ -48,10 +48,7 @@ const useData = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await tsv(
-          '/data/positivity_by_test_ordered_time.tsv',
-          autoType,
-        );
+        const data = await tsv(filePath, autoType);
         const transformedData = createTransformData(data);
         const chartData = createChartData(transformedData);
         console.log('chataData', chartData);

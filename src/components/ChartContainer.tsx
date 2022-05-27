@@ -32,7 +32,7 @@ const ChartContainer = ({
         <p>{description}</p>
       </Header>
       <MultiLineChart
-        data={data}
+        dataFilePath={'/data/positivity_by_test_ordered_time.tsv'}
         width={chartWrapperDimensions.width}
         height={chartHeight}
       />

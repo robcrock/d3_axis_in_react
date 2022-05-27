@@ -15,21 +15,23 @@ import AxisHorizontal from './Chart/AxisHorizontal';
 import AxisVertical from './Chart/AxisVertical';
 
 import ChartResizeObserver from './ChartResizeObserver';
+import useData from '../hooks/useData';
 
 type LineChartProps<Data extends DataRecord> = {
-  data: DataRecord[] | null;
+  dataFilePath: string;
   processedData: DataRecord[] | null;
   width: number;
   height: number;
 };
 
 const MultiLineChart = <Data extends DataRecord>({
-  data,
+  dataFilePath,
   processedData,
   width,
   height,
 }: LineChartProps<Data>) => {
-  const { original, transformed, chart } = data;
+  const [{ original, transformed, chart }] = useData(dataFilePath);
+  console.log('chartData ', chart);
   if (!original || !transformed || !chart)
     return <div style={{ width, height }} />;
 
@@ -44,9 +46,6 @@ const MultiLineChart = <Data extends DataRecord>({
 
   const xExtent = extent(transformed, xAccessor);
   const yExtent = extent(transformed, yAccessor);
-
-  console.log('data in chart ', data);
-  console.log('xExtent ', xExtent);
 
   // Create scales
   const xScale = scaleTime().domain(xExtent).range([0, innerWidth]);

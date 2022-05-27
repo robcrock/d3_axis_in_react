@@ -8,8 +8,6 @@ import GlobalStyles from './styles/GlobalStyles';
 import ChartContainer from './components/ChartContainer';
 
 const App = () => {
-  const [data] = useData();
-
   const titleText =
     'Flu A positivity is much lower than Covid positivity, but both are currently increasing';
   const descText = '';
@@ -22,7 +20,6 @@ const App = () => {
         description={descText}
         source={dataSource}
         chartHeight={500}
-        data={data}
       ></ChartContainer>
       <GlobalStyles />
     </div>
