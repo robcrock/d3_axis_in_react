@@ -24,8 +24,6 @@ const AxisHorizontal = ({
   const majorTicks = scale.ticks(timeMonth.every(1));
   const minorTicks = scale.ticks(timeDay.every(1));
 
-  console.log('ticks ', timeMonth.every(1));
-
   return (
     <AxisHorizontalWrapper
       transform={`translate(0, ${innerHeight})`}

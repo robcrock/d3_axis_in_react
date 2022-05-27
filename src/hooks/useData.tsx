@@ -9,34 +9,24 @@ const useData = filePath => {
   const createTransformData = dataSet => {
     // Filter the dataset
     const filteredData = Array.from(dataSet).filter(
-      d => d.test_ordered === 'COVID only test',
+      d => d.positivity_7day !== null,
     );
 
-    // Transform data
-    const covidP = filteredData.map(d => {
+    const stageData = filteredData.map(d => {
       return {
         date: d.collection_date,
-        dimension: 'covid_positivity',
-        value: d.covid_positivity,
+        test: d.license_assessment,
+        positivity: d.positivity,
+        positivity_7_day_avg: d.positivity_7day,
       };
     });
 
-    const flueP = filteredData.map(d => {
-      return {
-        date: d.collection_date,
-        dimension: 'flu_positivity',
-        value: d.flua_positivity,
-      };
-    });
-
-    const transformedData = covidP.concat(flueP);
-
-    return transformedData;
+    return stageData;
   };
 
   // Chart data function
   const createChartData = dataSet => {
-    const groupedData = Array.from(group(dataSet, d => d.dimension));
+    const groupedData = Array.from(group(dataSet, d => d.test));
 
     // Sort for presentation, as D3 doesn't sort our data for us.
     groupedData.forEach(group => group[1].sort((a, b) => a.date - b.date));
@@ -51,7 +41,6 @@ const useData = filePath => {
         const data = await tsv(filePath, autoType);
         const transformedData = createTransformData(data);
         const chartData = createChartData(transformedData);
-        console.log('chataData', chartData);
 
         const dataState = {
           original: data,

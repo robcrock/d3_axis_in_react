@@ -8,9 +8,9 @@ import GlobalStyles from './styles/GlobalStyles';
 import ChartContainer from './components/ChartContainer';
 
 const App = () => {
-  const titleText =
-    'Flu A positivity is much lower than Covid positivity, but both are currently increasing';
-  const descText = '';
+  const titleText = 'Waves of COVID and Flu A, since Late Last Year';
+  const descText =
+    'The first Flu A wave subsided with the rise of Omicron BA.1, while the second has persisted in spite of another rise in Omicron BA.2.';
   const dataSource = { name: 'Helix', link: 'https://www.helix.com/' };
 
   return (

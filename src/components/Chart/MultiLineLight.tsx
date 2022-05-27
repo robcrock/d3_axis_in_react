@@ -10,7 +10,7 @@ type LineProps = {
   yAccessorScaled: AccessorFn;
 };
 
-const MultiLine = ({
+const MultiLineLight = ({
   data,
   xAccessorScaled,
   yAccessorScaled,
@@ -28,17 +28,9 @@ const MultiLine = ({
           <Line
             {...props}
             className={`Line Line--type-line`}
-            stroke={['#556495', '#dfb016'][i]}
+            stroke={['hsl(225, 27%, 80%)', 'hsl(45, 82%, 80%)'][i]}
             d={lineGenerator(data[1] as Iterable<[number, number]>)!}
           />
-          <LineLabel
-            transform={`translate(8, 0)`}
-            x={xAccessorScaled(data[1][data[1].length - 1])}
-            y={yAccessorScaled(data[1][data[1].length - 1])}
-            fill={['#556495', '#dfb016'][i]}
-          >
-            {['COVID', 'Flu A'][i]}
-          </LineLabel>
         </g>
       ))}
     </>
@@ -47,7 +39,7 @@ const MultiLine = ({
 
 const Line = styled.path`
   fill: none;
-  stroke-width: 3;
+  stroke-width: 1.5;
   stroke-linejoin: round;
   stroke-linecap: round;
 `;
@@ -57,4 +49,4 @@ const LineLabel = styled.text`
   font-weight: 600;
 `;
 
-export default MultiLine;
+export default MultiLineLight;

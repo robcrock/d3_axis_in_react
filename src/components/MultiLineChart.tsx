@@ -16,6 +16,7 @@ import AxisVertical from './Chart/AxisVertical';
 
 import ChartResizeObserver from './ChartResizeObserver';
 import useData from '../hooks/useData';
+import MultiLineLight from './Chart/MultiLineLight';
 
 type LineChartProps<Data extends DataRecord> = {
   dataFilePath: string;
@@ -26,12 +27,12 @@ type LineChartProps<Data extends DataRecord> = {
 
 const MultiLineChart = <Data extends DataRecord>({
   dataFilePath,
-  processedData,
   width,
   height,
 }: LineChartProps<Data>) => {
   const [{ original, transformed, chart }] = useData(dataFilePath);
-  console.log('chartData ', chart);
+
+  // console.log('data', chart[0][1][1]);
   if (!original || !transformed || !chart)
     return <div style={{ width, height }} />;
 
@@ -42,10 +43,11 @@ const MultiLineChart = <Data extends DataRecord>({
 
   // Create accessor functions
   const xAccessor: AccessorFn = d => new Date(d.date);
-  const yAccessor: AccessorFn = d => d.value;
+  const povitivityAccessor: AccessorFn = d => d.positivity;
+  const povitivity7DayAccessor: AccessorFn = d => d.positivity_7_day_avg;
 
   const xExtent = extent(transformed, xAccessor);
-  const yExtent = extent(transformed, yAccessor);
+  const yExtent = extent(transformed, povitivityAccessor);
 
   // Create scales
   const xScale = scaleTime().domain(xExtent).range([0, innerWidth]);
@@ -54,16 +56,19 @@ const MultiLineChart = <Data extends DataRecord>({
 
   // Scale the accessor fuctions
   const xAccessorScaled: AccessorFn = d => xScale(xAccessor(d));
-  const yAccessorScaled: AccessorFn = d => yScale(yAccessor(d));
+  const povitivityAccessorScaled: AccessorFn = d =>
+    yScale(povitivityAccessor(d));
+  const povitivity7DayAccessorScaled: AccessorFn = d =>
+    yScale(povitivity7DayAccessor(d));
 
   const xTickFormatter = timeFormat('%B');
-  const yTickFormatter = format('');
+  const yTickFormatter = format('.1%');
 
   return (
     <ChartResizeObserver
       dimensions={{ margin, height, innerHeight, width, innerWidth }}
     >
-      <g transform={`translate(${margin.left} ${margin.top})`}>
+      <g transform={`translate(${margin.left}, ${margin.top})`}>
         <AxisHorizontal
           innerWidth={innerWidth}
           innerHeight={innerHeight}
@@ -75,13 +80,18 @@ const MultiLineChart = <Data extends DataRecord>({
           innerWidth={innerWidth}
           innerHeight={innerHeight}
           scale={yScale}
-          label={'Positivity Rate (log scale)'}
+          label={'Positivity Rate (percentage on a log scale)'}
           formatTick={yTickFormatter}
+        />
+        <MultiLineLight
+          data={chart}
+          xAccessorScaled={xAccessorScaled}
+          yAccessorScaled={povitivityAccessorScaled}
         />
         <MultiLine
           data={chart}
           xAccessorScaled={xAccessorScaled}
-          yAccessorScaled={yAccessorScaled}
+          yAccessorScaled={povitivity7DayAccessorScaled}
         />
       </g>
     </ChartResizeObserver>

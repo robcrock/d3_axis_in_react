@@ -10,8 +10,6 @@ const useResizeObserver = (ref: { current: any }) => {
     const divNode = ref.current;
     if (divNode == null) return;
 
-    console.log('divNode ', divNode.current);
-
     // create a resize observer
     const observer = new ResizeObserver(entries => {
       if (!entries.length) return;
@@ -19,7 +17,6 @@ const useResizeObserver = (ref: { current: any }) => {
       // on resize, update our internal state with the latest values
       const { width, height } = entries[0].contentRect;
 
-      console.log('contentRect ', entries[0].contentRect);
       setWidthHeight({ width, height });
     });
 

@@ -24,7 +24,7 @@ const AxisVertical = ({
 
   return (
     <AxisVerticalWrapper {...props}>
-      <AxisLine y2={innerHeight} />
+      <line y2={innerHeight} stroke='#ffffff' />
       {ticks.map((tick, i) => (
         <g key={i}>
           <line
@@ -43,7 +43,7 @@ const AxisVertical = ({
       {label && (
         <AxisLabel
           style={{
-            transform: `translate(-60px, -20px)`,
+            transform: `translate(-60px, -24px)`,
             textAnchor: 'start',
           }}
         >
