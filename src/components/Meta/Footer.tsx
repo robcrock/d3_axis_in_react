@@ -14,7 +14,7 @@ export default function Footer({ by, source }: FooterProps) {
           <SourceLink href={source}>Source: {by}</SourceLink>
         </cite>
       </figcaption>
-      <Logo src='../../../public/assets/helix_logo.png' alt='Helix Logo' />
+      <Logo src='/assets/helix_logo.png' alt='Helix Logo' />
     </Wrapper>
   );
 }

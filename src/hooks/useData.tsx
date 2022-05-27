@@ -1,5 +1,5 @@
-import { autoType, tsv } from 'd3';
-import { groupBy } from 'lodash';
+import { autoType, group, tsv } from 'd3';
+import { chunk, groupBy, union, partition } from 'lodash';
 import { useEffect, useState } from 'react';
 import { DataRecord } from '../typings/types';
 
@@ -16,7 +16,39 @@ const useData = () => {
           autoType,
         );
 
-        data && setData(data);
+        console.log(data);
+        console.log('Count before filter: ', data.length);
+
+        // Filter first to reduce the number of records you need to process
+        const filteredData = data?.filter(
+          d => d.test_ordered === 'COVID only test',
+        );
+
+        console.log('Count after filter: ', filteredData.length);
+
+        // Sort for presentation, as D3 doesn't sort our data for us.
+        const sortedData = filteredData.sort(
+          (a, b) => a.collection_date - b.collection_date,
+        );
+
+        // Transform data
+        const covidP = sortedData.map(d => {
+          return {
+            date: d.collection_date,
+            dimension: 'covid_positivity',
+            value: d.covid_positivity,
+          };
+        });
+
+        const flueP = sortedData.map(d => {
+          return {
+            date: d.collection_date,
+            dimension: 'flu_positivity',
+            value: d.flua_positivity,
+          };
+        });
+
+        data && setData(covidP.concat(flueP));
       } catch (error) {
         console.error(error);
       }
@@ -29,20 +61,10 @@ const useData = () => {
   useEffect(() => {
     if (!data) return;
 
-    // Filter first to reduce the number of records you need to process
-    const filteredData = data?.filter(
-      d => d.test_ordered === 'COVID only test' || 'COVID+Flu test',
-    );
+    const groupedData = Array.from(group(data, d => d.dimension));
 
     // Sort for presentation, as D3 doesn't sort our data for us.
-    const sortedData = filteredData.sort(
-      (a, b) => a.collection_date - b.collection_date,
-    );
-
-    const dataToGroup = groupBy(sortedData, 'test_ordered');
-    const groupedData = Object.keys(dataToGroup).map(function (key) {
-      return dataToGroup[key];
-    });
+    groupedData.forEach(group => group[1].sort((a, b) => a.date - b.date));
 
     setProcessedData(groupedData);
   }, [data]);

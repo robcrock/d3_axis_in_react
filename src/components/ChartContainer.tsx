@@ -7,8 +7,8 @@ import MultiLineChart from './MultiLineChart';
 
 type ChartContainerProps = {
   chartHeight: number;
-  title: string;
-  description: string;
+  title?: string;
+  description?: string;
   chartType?: string;
   data: { data: DataRecord[]; processedData: DataRecord[] };
   source: { name: string; link: string };

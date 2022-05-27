@@ -10,9 +10,9 @@ import ChartContainer from './components/ChartContainer';
 const App = () => {
   const [data, processedData] = useData();
 
-  const titleText = 'COVID Test Positivity Results';
-  const descText =
-    'Covid+Flu tests are typically ordered for patients who present with symptoms. This is not the case with Covid-only test orders. The Covid+Flu positivity rate is therefore a proxy for symptomatic positivity.';
+  const titleText =
+    'Flu A positivity is much lower than Covid positivity, but both are currently increasing';
+  const descText = '';
   const dataSource = { name: 'Helix', link: 'helix.com' };
 
   return (
@@ -21,7 +21,7 @@ const App = () => {
         title={titleText}
         description={descText}
         source={dataSource}
-        chartHeight={400}
+        chartHeight={500}
         data={{ data, processedData }}
       ></ChartContainer>
       <GlobalStyles />

@@ -1,3 +1,4 @@
+import { timeDay, timeMonth, timeWeek } from 'd3';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -20,7 +21,10 @@ const AxisHorizontal = ({
   ...props
 }: AxisHorizontalProps) => {
   const numberOfTicks = innerWidth / 100;
-  const ticks = scale.ticks(numberOfTicks);
+  const majorTicks = scale.ticks(timeMonth.every(1));
+  const minorTicks = scale.ticks(timeDay.every(1));
+
+  console.log('ticks ', timeMonth.every(1));
 
   return (
     <AxisHorizontalWrapper
@@ -29,10 +33,17 @@ const AxisHorizontal = ({
     >
       <AxisLine x2={innerWidth} />
 
-      {ticks.map((tick, i) => (
+      {majorTicks.map((tick, i) => (
         <g key={i} transform={`translate(${scale(tick)}, 25)`}>
           <line stroke='#ccc' y2='6' transform={`translate(0, -25)`} />
           <AxisTick key={i}>{formatTick(tick)}</AxisTick>
+        </g>
+      ))}
+
+      {minorTicks.map((tick, i) => (
+        <g key={i} transform={`translate(${scale(tick)}, 25)`}>
+          <line stroke='#ccc' y2='3' transform={`translate(0, -25)`} />
+          {/* <AxisTick key={i}>{formatTick(tick)}</AxisTick> */}
         </g>
       ))}
 

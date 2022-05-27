@@ -21,6 +21,8 @@ const MultiLine = ({
     .y(yAccessorScaled)
     .curve(curveMonotoneX);
 
+  console.log('processed data ', data);
+
   return (
     <>
       {data.map((data, i) => (
@@ -29,15 +31,15 @@ const MultiLine = ({
             {...props}
             className={`Line Line--type-line`}
             stroke={['#556495', '#dfb016'][i]}
-            d={lineGenerator(data as Iterable<[number, number]>)!}
+            d={lineGenerator(data[1] as Iterable<[number, number]>)!}
           />
           <LineLabel
             transform={`translate(8, 0)`}
-            x={xAccessorScaled(data[data.length - 1])}
-            y={yAccessorScaled(data[data.length - 1])}
+            x={xAccessorScaled(data[1][data[1].length - 1])}
+            y={yAccessorScaled(data[1][data[1].length - 1])}
             fill={['#556495', '#dfb016'][i]}
           >
-            {data[data.length - 1].test_ordered}
+            {['COVID', 'Flu A'][i]}
           </LineLabel>
         </g>
       ))}

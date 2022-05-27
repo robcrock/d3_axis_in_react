@@ -19,7 +19,7 @@ const AxisVertical = ({
   scale,
   ...props
 }: AxisVerticalProps) => {
-  const numberOfTicks = innerHeight / 70;
+  const numberOfTicks = innerHeight / 100;
   const ticks = scale.ticks(numberOfTicks);
 
   return (
@@ -43,7 +43,8 @@ const AxisVertical = ({
       {label && (
         <AxisLabel
           style={{
-            transform: `translate(0px, -20px)`,
+            transform: `translate(-60px, -20px)`,
+            textAnchor: 'start',
           }}
         >
           {label}
