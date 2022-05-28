@@ -19,22 +19,20 @@ import useData from '../hooks/useData';
 import MultiLineLight from './Chart/MultiLineLight';
 
 type LineChartProps<Data extends DataRecord> = {
-  dataFilePath: string;
+  dataSource: { path: string; type: string };
   processedData: DataRecord[] | null;
   width: number;
   height: number;
 };
 
 const MultiLineChart = <Data extends DataRecord>({
-  dataFilePath,
+  dataSource,
   width,
   height,
 }: LineChartProps<Data>) => {
-  const [{ original, transformed, chart }] = useData(dataFilePath);
-
-  // console.log('data', chart[0][1][1]);
-  if (!original || !transformed || !chart)
-    return <div style={{ width, height }} />;
+  const { data, error } = useData(dataSource.path, dataSource.type);
+  if (!data || error) return <div style={{ width, height }} />;
+  const { original, transformed, chart } = data;
 
   // Margin Convention
   const margin = { top: 60, right: 80, bottom: 100, left: 60 };
