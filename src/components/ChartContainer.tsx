@@ -53,8 +53,7 @@ const Wrapper = styled.figure`
   min-height: 100%;
   width: 90%;
   background: #ffffff;
-  margin-top: 0;
-  margin: 1rem;
+  margin: 0 auto;
   padding: 2rem;
   box-shadow: 5px 15px 46px rgba(0, 0, 0, 0.149966);
   backdrop-filter: blur(27.1828px);

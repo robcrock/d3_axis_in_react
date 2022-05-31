@@ -14,7 +14,7 @@ const App = () => {
   const dataSource = { name: 'Helix', link: 'https://www.helix.com/' };
 
   return (
-    <div>
+    <div style={{ padding: '1rem' }}>
       <ChartContainer
         title={titleText}
         description={descText}
