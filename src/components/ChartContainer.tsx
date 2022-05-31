@@ -7,6 +7,7 @@ import MultiLineChart from './MultiLineChart';
 
 type ChartContainerProps = {
   chartHeight: number;
+  aspectRatio: string;
   title?: string;
   description?: string;
   chartType?: string;
@@ -15,7 +16,7 @@ type ChartContainerProps = {
 };
 
 const ChartContainer = ({
-  chartHeight,
+  aspectRatio,
   title,
   description,
   chartType,
@@ -24,6 +25,10 @@ const ChartContainer = ({
 }: ChartContainerProps) => {
   const chartWrapperRef = React.useRef(null);
   const chartWrapperDimensions = useResizeObserver(chartWrapperRef);
+  const [ratioWidth, ratioHeight]: string[] = aspectRatio.split(':');
+  const height =
+    (chartWrapperDimensions.width / parseInt(ratioWidth)) *
+    parseInt(ratioHeight);
 
   return (
     <Wrapper ref={chartWrapperRef}>
@@ -37,7 +42,7 @@ const ChartContainer = ({
           type: 'tsv',
         }}
         width={chartWrapperDimensions.width}
-        height={chartHeight}
+        height={height}
       />
       <Footer by={source.name} source={source.link} />
     </Wrapper>
@@ -46,7 +51,9 @@ const ChartContainer = ({
 
 const Wrapper = styled.figure`
   min-height: 100%;
+  width: 90%;
   background: #ffffff;
+  margin-top: 0;
   margin: 1rem;
   padding: 2rem;
   box-shadow: 5px 15px 46px rgba(0, 0, 0, 0.149966);

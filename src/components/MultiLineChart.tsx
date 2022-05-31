@@ -60,7 +60,7 @@ const MultiLineChart = <Data extends DataRecord>({
     yScale(povitivity7DayAccessor(d));
 
   const xTickFormatter = timeFormat('%B');
-  const yTickFormatter = format('.1%');
+  const yTickFormatter = format('.0%');
 
   return (
     <ChartResizeObserver

@@ -2,7 +2,8 @@ import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyles = createGlobalStyle`
 
-/********** CSS Reset ***********/
+/********************************/
+/******** CSS Reset Start *******/
 
 /*
   1. Use a more-intuitive box-sizing model.
@@ -73,11 +74,13 @@ h6 {
   isolation: isolate;
 }
 
+/******** CSS Reset End *********/
+/********************************/
+
+
 /********** Additional Globals ***********/
 
 body {
-  padding: 1.6em 2em 4em;
-  letter-spacing: -0.011em;
   font-family: 'TT Norms', sans-serif;
   font-size: 16px;
   color: #34495e;

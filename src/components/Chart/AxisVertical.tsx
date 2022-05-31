@@ -1,3 +1,4 @@
+import { format } from 'd3';
 import React from 'react';
 
 import styled from 'styled-components';
@@ -19,8 +20,17 @@ const AxisVertical = ({
   scale,
   ...props
 }: AxisVerticalProps) => {
-  const numberOfTicks = innerHeight / 100;
+  const numberOfTicks = innerHeight / 140;
   const ticks = scale.ticks(numberOfTicks);
+  const getTickFormat = (tick: string, index: number) => {
+    if (index === 0) {
+      return format('.2%')(tick);
+    } else if (index === 1) {
+      return format('.1%')(tick);
+    } else {
+      return formatTick(tick);
+    }
+  };
 
   return (
     <AxisVerticalWrapper {...props}>
@@ -35,7 +45,7 @@ const AxisVertical = ({
             stroke='#EBEBEB'
           ></line>
           <AxisTick key={i} transform={`translate(-16, ${scale(tick)})`}>
-            {formatTick(tick)}
+            {getTickFormat(tick, i)}
           </AxisTick>
         </g>
       ))}

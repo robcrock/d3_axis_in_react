@@ -6,9 +6,13 @@ const useResizeObserver = (ref: { current: any }) => {
     height: 0,
   });
 
+  console.log('Triggered');
+  console.log('Width', width);
+  console.log('Height', height);
+
   useEffect(() => {
-    const divNode = ref.current;
-    if (divNode == null) return;
+    const figureNode = ref.current;
+    if (figureNode === null) return;
 
     // create a resize observer
     const observer = new ResizeObserver(entries => {
@@ -21,11 +25,11 @@ const useResizeObserver = (ref: { current: any }) => {
     });
 
     // observe our container node
-    observer.observe(divNode);
+    observer.observe(figureNode);
 
     // cleanup
     return () => {
-      observer.unobserve(divNode);
+      observer.unobserve(figureNode);
     };
   }, []);
 
