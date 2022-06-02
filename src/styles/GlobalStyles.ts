@@ -82,7 +82,7 @@ h6 {
 
 body {
   font-family: 'TT Norms', sans-serif;
-  font-size: 16px;
+  font-size: 1rem;
   color: #34495e;
   background: #f1f3f5;
 }
